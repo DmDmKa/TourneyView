@@ -1888,14 +1888,14 @@ Deprecated since v${version}`);
          * @param {unknown} [data] - Optional data to pass to the item's constructor.
          * @returns {T} The item from the pool.
          */
-        get(data) {
+        get(data2) {
           let item;
           if (this._index > 0) {
             item = this._pool[--this._index];
           } else {
             item = new this._classType();
           }
-          item.init?.(data);
+          item.init?.(data2);
           return item;
         }
         /**
@@ -1960,9 +1960,9 @@ Deprecated since v${version}`);
          * @param {unknown} [data] - Optional data to pass to the item's constructor.
          * @returns {T} The item from the pool.
          */
-        get(Class, data) {
+        get(Class, data2) {
           const pool = this.getPool(Class);
-          return pool.get(data);
+          return pool.get(data2);
         }
         /**
          * Returns an item to its respective pool.
@@ -8632,7 +8632,7 @@ Deprecated since v${version}`);
           const assetArray = convertToList(assets);
           assetArray.forEach((asset) => {
             const { src } = asset;
-            let { data, format, loadParser } = asset;
+            let { data: data2, format, loadParser } = asset;
             const srcsToUse = convertToList(src).map((src2) => {
               if (typeof src2 === "string") {
                 return createStringVariations(src2);
@@ -8655,7 +8655,7 @@ Deprecated since v${version}`);
                     }
                   }
                 } else {
-                  data = src2.data ?? data;
+                  data2 = src2.data ?? data2;
                   format = src2.format ?? format;
                   loadParser = src2.loadParser ?? loadParser;
                   formattedAsset = {
@@ -8668,7 +8668,7 @@ Deprecated since v${version}`);
                 }
                 formattedAsset = this._buildResolvedAsset(formattedAsset, {
                   aliases: aliasesToUse,
-                  data,
+                  data: data2,
                   format,
                   loadParser
                 });
@@ -8829,8 +8829,8 @@ Deprecated since v${version}`);
           const paramConnector = /\?/.test(url) ? "&" : "?";
           return `${url}${paramConnector}${this._defaultSearchParams}`;
         }
-        _buildResolvedAsset(formattedAsset, data) {
-          const { aliases, data: assetData, loadParser, format } = data;
+        _buildResolvedAsset(formattedAsset, data2) {
+          const { aliases, data: assetData, loadParser, format } = data2;
           if (this._basePath || this._rootPath) {
             formattedAsset.src = path.toAbsolute(formattedAsset.src, this._basePath, this._rootPath);
           }
@@ -9863,14 +9863,14 @@ Deprecated since v${version}`);
          * @param texture - Reference to the source BaseTexture object.
          * @param {object} data - Spritesheet image data.
          */
-        constructor(texture, data) {
+        constructor(texture, data2) {
           this.linkedSheets = [];
           this._texture = texture instanceof Texture ? texture : null;
           this.textureSource = texture.source;
           this.textures = {};
           this.animations = {};
-          this.data = data;
-          const metaResolution = parseFloat(data.meta.scale);
+          this.data = data2;
+          const metaResolution = parseFloat(data2.meta.scale);
           if (metaResolution) {
             this.resolution = metaResolution;
             texture.source.resolution = this.resolution;
@@ -9908,19 +9908,19 @@ Deprecated since v${version}`);
           const maxFrames = _Spritesheet2.BATCH_SIZE;
           while (frameIndex - initialFrameIndex < maxFrames && frameIndex < this._frameKeys.length) {
             const i2 = this._frameKeys[frameIndex];
-            const data = this._frames[i2];
-            const rect = data.frame;
+            const data2 = this._frames[i2];
+            const rect = data2.frame;
             if (rect) {
               let frame = null;
               let trim = null;
-              const sourceSize = data.trimmed !== false && data.sourceSize ? data.sourceSize : data.frame;
+              const sourceSize = data2.trimmed !== false && data2.sourceSize ? data2.sourceSize : data2.frame;
               const orig = new Rectangle(
                 0,
                 0,
                 Math.floor(sourceSize.w) / this.resolution,
                 Math.floor(sourceSize.h) / this.resolution
               );
-              if (data.rotated) {
+              if (data2.rotated) {
                 frame = new Rectangle(
                   Math.floor(rect.x) / this.resolution,
                   Math.floor(rect.y) / this.resolution,
@@ -9935,10 +9935,10 @@ Deprecated since v${version}`);
                   Math.floor(rect.h) / this.resolution
                 );
               }
-              if (data.trimmed !== false && data.spriteSourceSize) {
+              if (data2.trimmed !== false && data2.spriteSourceSize) {
                 trim = new Rectangle(
-                  Math.floor(data.spriteSourceSize.x) / this.resolution,
-                  Math.floor(data.spriteSourceSize.y) / this.resolution,
+                  Math.floor(data2.spriteSourceSize.x) / this.resolution,
+                  Math.floor(data2.spriteSourceSize.y) / this.resolution,
                   Math.floor(rect.w) / this.resolution,
                   Math.floor(rect.h) / this.resolution
                 );
@@ -9948,9 +9948,9 @@ Deprecated since v${version}`);
                 frame,
                 orig,
                 trim,
-                rotate: data.rotated ? 2 : 0,
-                defaultAnchor: data.anchor,
-                defaultBorders: data.borders,
+                rotate: data2.rotated ? 2 : 0,
+                defaultAnchor: data2.anchor,
+                defaultBorders: data2.borders,
                 label: i2.toString()
               });
             }
@@ -11277,7 +11277,7 @@ Deprecated since v${version}`);
          * @param options - the options for the buffer
          */
         constructor(options) {
-          let { data, size } = options;
+          let { data: data2, size } = options;
           const { usage, label, shrinkToFit } = options;
           super();
           this.uid = uid("buffer");
@@ -11287,12 +11287,12 @@ Deprecated since v${version}`);
           this._updateID = 1;
           this.shrinkToFit = true;
           this.destroyed = false;
-          if (data instanceof Array) {
-            data = new Float32Array(data);
+          if (data2 instanceof Array) {
+            data2 = new Float32Array(data2);
           }
-          this._data = data;
-          size = size ?? data?.byteLength;
-          const mappedAtCreation = !!data;
+          this._data = data2;
+          size = size ?? data2?.byteLength;
+          const mappedAtCreation = !!data2;
           this.descriptor = {
             size,
             usage,
@@ -11412,17 +11412,17 @@ Deprecated since v${version}`);
       bounds.maxY = 0;
       return bounds;
     }
-    const data = attribute.buffer.data;
+    const data2 = attribute.buffer.data;
     let minX = Infinity;
     let minY = Infinity;
     let maxX = -Infinity;
     let maxY = -Infinity;
-    const byteSize = data.BYTES_PER_ELEMENT;
+    const byteSize = data2.BYTES_PER_ELEMENT;
     const offset = (attribute.offset || 0) / byteSize;
     const stride = (attribute.stride || 2 * 4) / byteSize;
-    for (let i2 = offset; i2 < data.length; i2 += stride) {
-      const x2 = data[i2];
-      const y2 = data[i2 + 1];
+    for (let i2 = offset; i2 < data2.length; i2 += stride) {
+      const x2 = data2[i2];
+      const y2 = data2[i2 + 1];
       if (x2 > maxX)
         maxX = x2;
       if (y2 > maxY)
@@ -12917,20 +12917,20 @@ Deprecated since v${version}`);
       "use strict";
       module.exports = earcut2;
       module.exports.default = earcut2;
-      function earcut2(data, holeIndices, dim) {
+      function earcut2(data2, holeIndices, dim) {
         dim = dim || 2;
-        var hasHoles = holeIndices && holeIndices.length, outerLen = hasHoles ? holeIndices[0] * dim : data.length, outerNode = linkedList(data, 0, outerLen, dim, true), triangles = [];
+        var hasHoles = holeIndices && holeIndices.length, outerLen = hasHoles ? holeIndices[0] * dim : data2.length, outerNode = linkedList(data2, 0, outerLen, dim, true), triangles = [];
         if (!outerNode || outerNode.next === outerNode.prev)
           return triangles;
         var minX, minY, maxX, maxY, x2, y2, invSize;
         if (hasHoles)
-          outerNode = eliminateHoles(data, holeIndices, outerNode, dim);
-        if (data.length > 80 * dim) {
-          minX = maxX = data[0];
-          minY = maxY = data[1];
+          outerNode = eliminateHoles(data2, holeIndices, outerNode, dim);
+        if (data2.length > 80 * dim) {
+          minX = maxX = data2[0];
+          minY = maxY = data2[1];
           for (var i2 = dim; i2 < outerLen; i2 += dim) {
-            x2 = data[i2];
-            y2 = data[i2 + 1];
+            x2 = data2[i2];
+            y2 = data2[i2 + 1];
             if (x2 < minX)
               minX = x2;
             if (y2 < minY)
@@ -12946,14 +12946,14 @@ Deprecated since v${version}`);
         earcutLinked(outerNode, triangles, dim, minX, minY, invSize, 0);
         return triangles;
       }
-      function linkedList(data, start, end, dim, clockwise) {
+      function linkedList(data2, start, end, dim, clockwise) {
         var i2, last;
-        if (clockwise === signedArea(data, start, end, dim) > 0) {
+        if (clockwise === signedArea(data2, start, end, dim) > 0) {
           for (i2 = start; i2 < end; i2 += dim)
-            last = insertNode(i2, data[i2], data[i2 + 1], last);
+            last = insertNode(i2, data2[i2], data2[i2 + 1], last);
         } else {
           for (i2 = end - dim; i2 >= start; i2 -= dim)
-            last = insertNode(i2, data[i2], data[i2 + 1], last);
+            last = insertNode(i2, data2[i2], data2[i2 + 1], last);
         }
         if (last && equals(last, last.next)) {
           removeNode(last);
@@ -13089,12 +13089,12 @@ Deprecated since v${version}`);
           a2 = a2.next;
         } while (a2 !== start);
       }
-      function eliminateHoles(data, holeIndices, outerNode, dim) {
+      function eliminateHoles(data2, holeIndices, outerNode, dim) {
         var queue = [], i2, len, start, end, list;
         for (i2 = 0, len = holeIndices.length; i2 < len; i2++) {
           start = holeIndices[i2] * dim;
-          end = i2 < len - 1 ? holeIndices[i2 + 1] * dim : data.length;
-          list = linkedList(data, start, end, dim, false);
+          end = i2 < len - 1 ? holeIndices[i2 + 1] * dim : data2.length;
+          list = linkedList(data2, start, end, dim, false);
           if (list === list.next)
             list.steiner = true;
           queue.push(getLeftmost(list));
@@ -13330,15 +13330,15 @@ Deprecated since v${version}`);
         this.nextZ = null;
         this.steiner = false;
       }
-      earcut2.deviation = function(data, holeIndices, dim, triangles) {
+      earcut2.deviation = function(data2, holeIndices, dim, triangles) {
         var hasHoles = holeIndices && holeIndices.length;
-        var outerLen = hasHoles ? holeIndices[0] * dim : data.length;
-        var polygonArea = Math.abs(signedArea(data, 0, outerLen, dim));
+        var outerLen = hasHoles ? holeIndices[0] * dim : data2.length;
+        var polygonArea = Math.abs(signedArea(data2, 0, outerLen, dim));
         if (hasHoles) {
           for (var i2 = 0, len = holeIndices.length; i2 < len; i2++) {
             var start = holeIndices[i2] * dim;
-            var end = i2 < len - 1 ? holeIndices[i2 + 1] * dim : data.length;
-            polygonArea -= Math.abs(signedArea(data, start, end, dim));
+            var end = i2 < len - 1 ? holeIndices[i2 + 1] * dim : data2.length;
+            polygonArea -= Math.abs(signedArea(data2, start, end, dim));
           }
         }
         var trianglesArea = 0;
@@ -13347,28 +13347,28 @@ Deprecated since v${version}`);
           var b2 = triangles[i2 + 1] * dim;
           var c2 = triangles[i2 + 2] * dim;
           trianglesArea += Math.abs(
-            (data[a2] - data[c2]) * (data[b2 + 1] - data[a2 + 1]) - (data[a2] - data[b2]) * (data[c2 + 1] - data[a2 + 1])
+            (data2[a2] - data2[c2]) * (data2[b2 + 1] - data2[a2 + 1]) - (data2[a2] - data2[b2]) * (data2[c2 + 1] - data2[a2 + 1])
           );
         }
         return polygonArea === 0 && trianglesArea === 0 ? 0 : Math.abs((trianglesArea - polygonArea) / polygonArea);
       };
-      function signedArea(data, start, end, dim) {
+      function signedArea(data2, start, end, dim) {
         var sum = 0;
         for (var i2 = start, j2 = end - dim; i2 < end; i2 += dim) {
-          sum += (data[j2] - data[i2]) * (data[i2 + 1] + data[j2 + 1]);
+          sum += (data2[j2] - data2[i2]) * (data2[i2 + 1] + data2[j2 + 1]);
           j2 = i2;
         }
         return sum;
       }
-      earcut2.flatten = function(data) {
-        var dim = data[0][0].length, result = { vertices: [], holes: [], dimensions: dim }, holeIndex = 0;
-        for (var i2 = 0; i2 < data.length; i2++) {
-          for (var j2 = 0; j2 < data[i2].length; j2++) {
+      earcut2.flatten = function(data2) {
+        var dim = data2[0][0].length, result = { vertices: [], holes: [], dimensions: dim }, holeIndex = 0;
+        for (var i2 = 0; i2 < data2.length; i2++) {
+          for (var j2 = 0; j2 < data2[i2].length; j2++) {
             for (var d2 = 0; d2 < dim; d2++)
-              result.vertices.push(data[i2][j2][d2]);
+              result.vertices.push(data2[i2][j2][d2]);
           }
           if (i2 > 0) {
-            holeIndex += data[i2 - 1].length;
+            holeIndex += data2[i2 - 1].length;
             result.holes.push(holeIndex);
           }
         }
@@ -13532,19 +13532,19 @@ Deprecated since v${version}`);
       }
     }
   }
-  function addTextureToGeometryData(data, batches, geometryData) {
+  function addTextureToGeometryData(data2, batches, geometryData) {
     const { vertices, uvs, indices } = geometryData;
     const indexOffset = indices.length;
     const vertOffset = vertices.length / 2;
     const points = [];
     const build = buildMap.rectangle;
     const rect = tempRect;
-    const texture = data.image;
-    rect.x = data.dx;
-    rect.y = data.dy;
-    rect.width = data.dw;
-    rect.height = data.dh;
-    const matrix = data.transform;
+    const texture = data2.image;
+    rect.x = data2.dx;
+    rect.y = data2.dy;
+    rect.width = data2.dw;
+    rect.height = data2.dh;
+    const matrix = data2.transform;
     build.build(rect, points);
     if (matrix) {
       transformVertices(points, matrix);
@@ -13566,8 +13566,8 @@ Deprecated since v${version}`);
     graphicsBatch.indexSize = indices.length - indexOffset;
     graphicsBatch.vertexOffset = vertOffset;
     graphicsBatch.vertexSize = vertices.length / 2 - vertOffset;
-    graphicsBatch.color = data.style;
-    graphicsBatch.alpha = data.alpha;
+    graphicsBatch.color = data2.style;
+    graphicsBatch.alpha = data2.alpha;
     graphicsBatch.texture = texture;
     graphicsBatch.geometryData = geometryData;
     batches.push(graphicsBatch);
@@ -14910,17 +14910,17 @@ Deprecated since v${version}`);
   });
 
   // node_modules/pixi.js/lib/utils/canvas/getCanvasBoundingBox.mjs
-  function checkRow(data, width, y2) {
+  function checkRow(data2, width, y2) {
     for (let x2 = 0, index = 4 * y2 * width; x2 < width; ++x2, index += 4) {
-      if (data[index + 3] !== 0)
+      if (data2[index + 3] !== 0)
         return false;
     }
     return true;
   }
-  function checkColumn(data, width, x2, top, bottom) {
+  function checkColumn(data2, width, x2, top, bottom) {
     const stride = 4 * width;
     for (let y2 = top, index = top * stride + 4 * x2; y2 <= bottom; ++y2, index += stride) {
-      if (data[index + 3] !== 0)
+      if (data2[index + 3] !== 0)
         return false;
     }
     return true;
@@ -14934,20 +14934,20 @@ Deprecated since v${version}`);
       throw new TypeError("Failed to get canvas 2D context");
     }
     const imageData = context2.getImageData(0, 0, width, height);
-    const data = imageData.data;
+    const data2 = imageData.data;
     let left = 0;
     let top = 0;
     let right = width - 1;
     let bottom = height - 1;
-    while (top < height && checkRow(data, width, top))
+    while (top < height && checkRow(data2, width, top))
       ++top;
     if (top === height)
       return Rectangle.EMPTY;
-    while (checkRow(data, width, bottom))
+    while (checkRow(data2, width, bottom))
       --bottom;
-    while (checkColumn(data, width, left, top, bottom))
+    while (checkColumn(data2, width, left, top, bottom))
       ++left;
-    while (checkColumn(data, width, right, top, bottom))
+    while (checkColumn(data2, width, right, top, bottom))
       --right;
     ++right;
     ++bottom;
@@ -16015,26 +16015,26 @@ Deprecated since v${version}`);
       var length = { a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0 };
       var segment = /([astvzqmhlc])([^astvzqmhlc]*)/ig;
       function parse2(path2) {
-        var data = [];
+        var data2 = [];
         path2.replace(segment, function(_, command, args) {
           var type = command.toLowerCase();
           args = parseValues(args);
           if (type == "m" && args.length > 2) {
-            data.push([command].concat(args.splice(0, 2)));
+            data2.push([command].concat(args.splice(0, 2)));
             type = "l";
             command = command == "m" ? "l" : "L";
           }
           while (true) {
             if (args.length == length[type]) {
               args.unshift(command);
-              return data.push(args);
+              return data2.push(args);
             }
             if (args.length < length[type])
               throw new Error("malformed path data");
-            data.push([command].concat(args.splice(0, length[type])));
+            data2.push([command].concat(args.splice(0, length[type])));
           }
         });
-        return data;
+        return data2;
       }
       var number = /-?[0-9]*\.?[0-9]+(?:e[-+]?\d+)?/ig;
       function parseValues(args) {
@@ -16046,154 +16046,154 @@ Deprecated since v${version}`);
 
   // node_modules/pixi.js/lib/scene/graphics/shared/svg/SVGToGraphicsPath.mjs
   function SVGToGraphicsPath(svgPath, path2) {
-    const commands2 = (0, import_parse_svg_path.default)(svgPath);
+    const commands = (0, import_parse_svg_path.default)(svgPath);
     const subpaths = [];
     let currentSubPath = null;
     let lastX = 0;
     let lastY = 0;
-    for (let i2 = 0; i2 < commands2.length; i2++) {
-      const command = commands2[i2];
+    for (let i2 = 0; i2 < commands.length; i2++) {
+      const command = commands[i2];
       const type = command[0];
-      const data = command;
+      const data2 = command;
       switch (type) {
         case "M":
-          lastX = data[1];
-          lastY = data[2];
+          lastX = data2[1];
+          lastY = data2[2];
           path2.moveTo(lastX, lastY);
           break;
         case "m":
-          lastX += data[1];
-          lastY += data[2];
+          lastX += data2[1];
+          lastY += data2[2];
           path2.moveTo(lastX, lastY);
           break;
         case "H":
-          lastX = data[1];
+          lastX = data2[1];
           path2.lineTo(lastX, lastY);
           break;
         case "h":
-          lastX += data[1];
+          lastX += data2[1];
           path2.lineTo(lastX, lastY);
           break;
         case "V":
-          lastY = data[1];
+          lastY = data2[1];
           path2.lineTo(lastX, lastY);
           break;
         case "v":
-          lastY += data[1];
+          lastY += data2[1];
           path2.lineTo(lastX, lastY);
           break;
         case "L":
-          lastX = data[1];
-          lastY = data[2];
+          lastX = data2[1];
+          lastY = data2[2];
           path2.lineTo(lastX, lastY);
           break;
         case "l":
-          lastX += data[1];
-          lastY += data[2];
+          lastX += data2[1];
+          lastY += data2[2];
           path2.lineTo(lastX, lastY);
           break;
         case "C":
-          lastX = data[5];
-          lastY = data[6];
+          lastX = data2[5];
+          lastY = data2[6];
           path2.bezierCurveTo(
-            data[1],
-            data[2],
-            data[3],
-            data[4],
+            data2[1],
+            data2[2],
+            data2[3],
+            data2[4],
             lastX,
             lastY
           );
           break;
         case "c":
           path2.bezierCurveTo(
-            lastX + data[1],
-            lastY + data[2],
-            lastX + data[3],
-            lastY + data[4],
-            lastX + data[5],
-            lastY + data[6]
+            lastX + data2[1],
+            lastY + data2[2],
+            lastX + data2[3],
+            lastY + data2[4],
+            lastX + data2[5],
+            lastY + data2[6]
           );
-          lastX += data[5];
-          lastY += data[6];
+          lastX += data2[5];
+          lastY += data2[6];
           break;
         case "S":
-          lastX = data[3];
-          lastY = data[4];
+          lastX = data2[3];
+          lastY = data2[4];
           path2.bezierCurveToShort(
-            data[1],
-            data[2],
+            data2[1],
+            data2[2],
             lastX,
             lastY
           );
           break;
         case "s":
           path2.bezierCurveToShort(
-            lastX + data[1],
-            lastY + data[2],
-            lastX + data[3],
-            lastY + data[4]
+            lastX + data2[1],
+            lastY + data2[2],
+            lastX + data2[3],
+            lastY + data2[4]
           );
-          lastX += data[3];
-          lastY += data[4];
+          lastX += data2[3];
+          lastY += data2[4];
           break;
         case "Q":
-          lastX = data[3];
-          lastY = data[4];
+          lastX = data2[3];
+          lastY = data2[4];
           path2.quadraticCurveTo(
-            data[1],
-            data[2],
+            data2[1],
+            data2[2],
             lastX,
             lastY
           );
           break;
         case "q":
           path2.quadraticCurveTo(
-            lastX + data[1],
-            lastY + data[2],
-            lastX + data[3],
-            lastY + data[4]
+            lastX + data2[1],
+            lastY + data2[2],
+            lastX + data2[3],
+            lastY + data2[4]
           );
-          lastX += data[3];
-          lastY += data[4];
+          lastX += data2[3];
+          lastY += data2[4];
           break;
         case "T":
-          lastX = data[1];
-          lastY = data[2];
+          lastX = data2[1];
+          lastY = data2[2];
           path2.quadraticCurveToShort(
             lastX,
             lastY
           );
           break;
         case "t":
-          lastX += data[1];
-          lastY += data[2];
+          lastX += data2[1];
+          lastY += data2[2];
           path2.quadraticCurveToShort(
             lastX,
             lastY
           );
           break;
         case "A":
-          lastX = data[6];
-          lastY = data[7];
+          lastX = data2[6];
+          lastY = data2[7];
           path2.arcToSvg(
-            data[1],
-            data[2],
-            data[3],
-            data[4],
-            data[5],
+            data2[1],
+            data2[2],
+            data2[3],
+            data2[4],
+            data2[5],
             lastX,
             lastY
           );
           break;
         case "a":
-          lastX += data[6];
-          lastY += data[7];
+          lastX += data2[6];
+          lastY += data2[7];
           path2.arcToSvg(
-            data[1],
-            data[2],
-            data[3],
-            data[4],
-            data[5],
+            data2[1],
+            data2[2],
+            data2[3],
+            data2[4],
+            data2[5],
             lastX,
             lastY
           );
@@ -18170,66 +18170,66 @@ Deprecated since v${version}`);
           let ry = 0;
           for (let i2 = 0; i2 < this.instructions.length; i2++) {
             const instruction = this.instructions[i2];
-            const data = instruction.data;
+            const data2 = instruction.data;
             switch (instruction.action) {
               case "moveTo":
               case "lineTo":
-                x2 = data[0];
-                y2 = data[1];
-                data[0] = a2 * x2 + c2 * y2 + tx;
-                data[1] = b2 * x2 + d2 * y2 + ty;
+                x2 = data2[0];
+                y2 = data2[1];
+                data2[0] = a2 * x2 + c2 * y2 + tx;
+                data2[1] = b2 * x2 + d2 * y2 + ty;
                 break;
               case "bezierCurveTo":
-                cpx1 = data[0];
-                cpy1 = data[1];
-                cpx2 = data[2];
-                cpy2 = data[3];
-                x2 = data[4];
-                y2 = data[5];
-                data[0] = a2 * cpx1 + c2 * cpy1 + tx;
-                data[1] = b2 * cpx1 + d2 * cpy1 + ty;
-                data[2] = a2 * cpx2 + c2 * cpy2 + tx;
-                data[3] = b2 * cpx2 + d2 * cpy2 + ty;
-                data[4] = a2 * x2 + c2 * y2 + tx;
-                data[5] = b2 * x2 + d2 * y2 + ty;
+                cpx1 = data2[0];
+                cpy1 = data2[1];
+                cpx2 = data2[2];
+                cpy2 = data2[3];
+                x2 = data2[4];
+                y2 = data2[5];
+                data2[0] = a2 * cpx1 + c2 * cpy1 + tx;
+                data2[1] = b2 * cpx1 + d2 * cpy1 + ty;
+                data2[2] = a2 * cpx2 + c2 * cpy2 + tx;
+                data2[3] = b2 * cpx2 + d2 * cpy2 + ty;
+                data2[4] = a2 * x2 + c2 * y2 + tx;
+                data2[5] = b2 * x2 + d2 * y2 + ty;
                 break;
               case "quadraticCurveTo":
-                cpx1 = data[0];
-                cpy1 = data[1];
-                x2 = data[2];
-                y2 = data[3];
-                data[0] = a2 * cpx1 + c2 * cpy1 + tx;
-                data[1] = b2 * cpx1 + d2 * cpy1 + ty;
-                data[2] = a2 * x2 + c2 * y2 + tx;
-                data[3] = b2 * x2 + d2 * y2 + ty;
+                cpx1 = data2[0];
+                cpy1 = data2[1];
+                x2 = data2[2];
+                y2 = data2[3];
+                data2[0] = a2 * cpx1 + c2 * cpy1 + tx;
+                data2[1] = b2 * cpx1 + d2 * cpy1 + ty;
+                data2[2] = a2 * x2 + c2 * y2 + tx;
+                data2[3] = b2 * x2 + d2 * y2 + ty;
                 break;
               case "arcToSvg":
-                x2 = data[5];
-                y2 = data[6];
-                rx = data[0];
-                ry = data[1];
-                data[0] = a2 * rx + c2 * ry;
-                data[1] = b2 * rx + d2 * ry;
-                data[5] = a2 * x2 + c2 * y2 + tx;
-                data[6] = b2 * x2 + d2 * y2 + ty;
+                x2 = data2[5];
+                y2 = data2[6];
+                rx = data2[0];
+                ry = data2[1];
+                data2[0] = a2 * rx + c2 * ry;
+                data2[1] = b2 * rx + d2 * ry;
+                data2[5] = a2 * x2 + c2 * y2 + tx;
+                data2[6] = b2 * x2 + d2 * y2 + ty;
                 break;
               case "circle":
-                data[4] = adjustTransform(data[3], matrix);
+                data2[4] = adjustTransform(data2[3], matrix);
                 break;
               case "rect":
-                data[4] = adjustTransform(data[4], matrix);
+                data2[4] = adjustTransform(data2[4], matrix);
                 break;
               case "ellipse":
-                data[8] = adjustTransform(data[8], matrix);
+                data2[8] = adjustTransform(data2[8], matrix);
                 break;
               case "roundRect":
-                data[5] = adjustTransform(data[5], matrix);
+                data2[5] = adjustTransform(data2[5], matrix);
                 break;
               case "addPath":
-                data[0].transform(matrix);
+                data2[0].transform(matrix);
                 break;
               case "poly":
-                data[2] = adjustTransform(data[2], matrix);
+                data2[2] = adjustTransform(data2[2], matrix);
                 break;
               default:
                 warn("unknown transform action", instruction.action);
@@ -19246,16 +19246,16 @@ Deprecated since v${version}`);
             const instruction = this.instructions[i2];
             const action = instruction.action;
             if (action === "fill") {
-              const data = instruction.data;
-              bounds.addBounds(data.path.bounds);
+              const data2 = instruction.data;
+              bounds.addBounds(data2.path.bounds);
             } else if (action === "texture") {
-              const data = instruction.data;
-              bounds.addFrame(data.dx, data.dy, data.dx + data.dw, data.dy + data.dh, data.transform);
+              const data2 = instruction.data;
+              bounds.addFrame(data2.dx, data2.dy, data2.dx + data2.dw, data2.dy + data2.dh, data2.transform);
             }
             if (action === "stroke") {
-              const data = instruction.data;
-              const padding = data.style.width / 2;
-              const _bounds = data.path.bounds;
+              const data2 = instruction.data;
+              const padding = data2.style.width / 2;
+              const _bounds = data2.path.bounds;
               bounds.addFrame(
                 _bounds.minX - padding,
                 _bounds.minY - padding,
@@ -19278,11 +19278,11 @@ Deprecated since v${version}`);
           let hasHit = false;
           for (let k2 = 0; k2 < instructions.length; k2++) {
             const instruction = instructions[k2];
-            const data = instruction.data;
-            const path2 = data.path;
+            const data2 = instruction.data;
+            const path2 = data2.path;
             if (!instruction.action || !path2)
               continue;
-            const style = data.style;
+            const style = data2.style;
             const shapes = path2.shapePath.shapePrimitives;
             for (let i2 = 0; i2 < shapes.length; i2++) {
               const shape = shapes[i2].shape;
@@ -19295,7 +19295,7 @@ Deprecated since v${version}`);
               } else {
                 hasHit = shape.strokeContains(transformedPoint.x, transformedPoint.y, style.width);
               }
-              const holes = data.hole;
+              const holes = data2.hole;
               if (holes) {
                 const holeShapes = holes.shapePath?.shapePrimitives;
                 if (holeShapes) {
@@ -20448,14 +20448,14 @@ Deprecated since v${version}`);
       BitmapFont = class extends AbstractBitmapFont {
         constructor(options, url) {
           super();
-          const { textures, data } = options;
-          Object.keys(data.pages).forEach((key) => {
-            const pageData = data.pages[parseInt(key, 10)];
+          const { textures, data: data2 } = options;
+          Object.keys(data2.pages).forEach((key) => {
+            const pageData = data2.pages[parseInt(key, 10)];
             const texture = textures[pageData.id];
             this.pages.push({ texture });
           });
-          Object.keys(data.chars).forEach((key) => {
-            const charData = data.chars[key];
+          Object.keys(data2.chars).forEach((key) => {
+            const charData = data2.chars[key];
             const textureSource = textures[charData.page].source;
             const frameReal = new Rectangle(
               charData.x,
@@ -20476,17 +20476,17 @@ Deprecated since v${version}`);
               texture
             };
           });
-          this.baseRenderedFontSize = data.fontSize;
-          this.baseMeasurementFontSize = data.fontSize;
+          this.baseRenderedFontSize = data2.fontSize;
+          this.baseMeasurementFontSize = data2.fontSize;
           this.fontMetrics = {
             ascent: 0,
             descent: 0,
-            fontSize: data.fontSize
+            fontSize: data2.fontSize
           };
-          this.baseLineOffset = data.baseLineOffset;
-          this.lineHeight = data.lineHeight;
-          this.fontFamily = data.fontFamily;
-          this.distanceField = data.distanceField ?? {
+          this.baseLineOffset = data2.baseLineOffset;
+          this.lineHeight = data2.lineHeight;
+          this.fontFamily = data2.fontFamily;
+          this.distanceField = data2.distanceField ?? {
             type: "none",
             range: 0
           };
@@ -20537,8 +20537,8 @@ Deprecated since v${version}`);
     "node_modules/pixi.js/lib/scene/text-bitmap/asset/bitmapFontTextParser.mjs"() {
       "use strict";
       bitmapFontTextParser = {
-        test(data) {
-          return typeof data === "string" && data.startsWith("info face=");
+        test(data2) {
+          return typeof data2 === "string" && data2.startsWith("info face=");
         },
         parse(txt) {
           const items = txt.match(/^[a-z]+\s+.+$/gm);
@@ -20637,12 +20637,12 @@ Deprecated since v${version}`);
     "node_modules/pixi.js/lib/scene/text-bitmap/asset/bitmapFontXMLParser.mjs"() {
       "use strict";
       bitmapFontXMLParser = {
-        test(data) {
-          const xml = data;
+        test(data2) {
+          const xml = data2;
           return typeof xml !== "string" && "getElementsByTagName" in xml && xml.getElementsByTagName("page").length && xml.getElementsByTagName("info")[0].getAttribute("face") !== null;
         },
         parse(xml) {
-          const data = {
+          const data2 = {
             chars: {},
             pages: [],
             lineHeight: 0,
@@ -20655,7 +20655,7 @@ Deprecated since v${version}`);
           const common = xml.getElementsByTagName("common")[0];
           const distanceField = xml.getElementsByTagName("distanceField")[0];
           if (distanceField) {
-            data.distanceField = {
+            data2.distanceField = {
               type: distanceField.getAttribute("fieldType"),
               range: parseInt(distanceField.getAttribute("distanceRange"), 10)
             };
@@ -20663,17 +20663,17 @@ Deprecated since v${version}`);
           const page = xml.getElementsByTagName("page");
           const char = xml.getElementsByTagName("char");
           const kerning = xml.getElementsByTagName("kerning");
-          data.fontSize = parseInt(info.getAttribute("size"), 10);
-          data.fontFamily = info.getAttribute("face");
-          data.lineHeight = parseInt(common.getAttribute("lineHeight"), 10);
+          data2.fontSize = parseInt(info.getAttribute("size"), 10);
+          data2.fontFamily = info.getAttribute("face");
+          data2.lineHeight = parseInt(common.getAttribute("lineHeight"), 10);
           for (let i2 = 0; i2 < page.length; i2++) {
-            data.pages.push({
+            data2.pages.push({
               id: parseInt(page[i2].getAttribute("id"), 10) || 0,
               file: page[i2].getAttribute("file")
             });
           }
           const map = {};
-          data.baseLineOffset = data.lineHeight - parseInt(common.getAttribute("base"), 10);
+          data2.baseLineOffset = data2.lineHeight - parseInt(common.getAttribute("base"), 10);
           for (let i2 = 0; i2 < char.length; i2++) {
             const charNode = char[i2];
             const id = parseInt(charNode.getAttribute("id"), 10);
@@ -20681,7 +20681,7 @@ Deprecated since v${version}`);
             if (letter === "space")
               letter = " ";
             map[id] = letter;
-            data.chars[letter] = {
+            data2.chars[letter] = {
               id,
               // texture deets..
               page: parseInt(charNode.getAttribute("page"), 10) || 0,
@@ -20701,9 +20701,9 @@ Deprecated since v${version}`);
             const first = parseInt(kerning[i2].getAttribute("first"), 10);
             const second = parseInt(kerning[i2].getAttribute("second"), 10);
             const amount = parseInt(kerning[i2].getAttribute("amount"), 10);
-            data.chars[map[second]].kerning[map[first]] = amount;
+            data2.chars[map[second]].kerning[map[first]] = amount;
           }
-          return data;
+          return data2;
         }
       };
     }
@@ -20716,14 +20716,14 @@ Deprecated since v${version}`);
       init_adapter();
       init_bitmapFontXMLParser();
       bitmapFontXMLStringParser = {
-        test(data) {
-          if (typeof data === "string" && data.includes("<font>")) {
-            return bitmapFontXMLParser.test(DOMAdapter.get().parseXML(data));
+        test(data2) {
+          if (typeof data2 === "string" && data2.includes("<font>")) {
+            return bitmapFontXMLParser.test(DOMAdapter.get().parseXML(data2));
           }
           return false;
         },
-        parse(data) {
-          return bitmapFontXMLParser.parse(DOMAdapter.get().parseXML(data));
+        parse(data2) {
+          return bitmapFontXMLParser.parse(DOMAdapter.get().parseXML(data2));
         }
       };
     }
@@ -20762,12 +20762,12 @@ Deprecated since v${version}`);
         test(url) {
           return validExtensions.includes(path.extname(url).toLowerCase());
         },
-        async testParse(data) {
-          return bitmapFontTextParser.test(data) || bitmapFontXMLStringParser.test(data);
+        async testParse(data2) {
+          return bitmapFontTextParser.test(data2) || bitmapFontXMLStringParser.test(data2);
         },
-        async parse(asset, data, loader) {
+        async parse(asset, data2, loader) {
           const bitmapFontData = bitmapFontTextParser.test(asset) ? bitmapFontTextParser.parse(asset) : bitmapFontXMLStringParser.parse(asset);
-          const { src } = data;
+          const { src } = data2;
           const { pages } = bitmapFontData;
           const textureUrls = [];
           for (let i2 = 0; i2 < pages.length; ++i2) {
@@ -22484,10 +22484,10 @@ ${parts.join("\n")}
           } else if (gpuProgram2 && groups && !groupMap) {
             const groupData = gpuProgram2.structsAndGroups.groups;
             groupMap = {};
-            groupData.forEach((data) => {
-              groupMap[data.group] = groupMap[data.group] || {};
-              groupMap[data.group][data.binding] = data.name;
-              nameHash[data.name] = data;
+            groupData.forEach((data2) => {
+              groupMap[data2.group] = groupMap[data2.group] || {};
+              groupMap[data2.group][data2.binding] = data2.name;
+              nameHash[data2.name] = data2;
             });
           } else if (resources) {
             if (!gpuProgram2) {
@@ -22506,10 +22506,10 @@ ${parts.join("\n")}
             } else {
               const groupData = gpuProgram2.structsAndGroups.groups;
               groupMap = {};
-              groupData.forEach((data) => {
-                groupMap[data.group] = groupMap[data.group] || {};
-                groupMap[data.group][data.binding] = data.name;
-                nameHash[data.name] = data;
+              groupData.forEach((data2) => {
+                groupMap[data2.group] = groupMap[data2.group] || {};
+                groupMap[data2.group][data2.binding] = data2.name;
+                nameHash[data2.name] = data2;
               });
             }
             groups = {};
@@ -22519,13 +22519,13 @@ ${parts.join("\n")}
               if (!value.source && !value._resourceType) {
                 value = new UniformGroup(value);
               }
-              const data = nameHash[name];
-              if (data) {
-                if (!groups[data.group]) {
-                  groups[data.group] = new BindGroup();
-                  this._ownedBindGroups.push(groups[data.group]);
+              const data2 = nameHash[name];
+              if (data2) {
+                if (!groups[data2.group]) {
+                  groups[data2.group] = new BindGroup();
+                  this._ownedBindGroups.push(groups[data2.group]);
                 }
-                groups[data.group].setResource(value, data.binding);
+                groups[data2.group].setResource(value, data2.binding);
               }
             }
           }
@@ -22552,13 +22552,13 @@ ${parts.join("\n")}
         _buildResourceAccessor(groups, nameHash) {
           const uniformsOut = {};
           for (const i2 in nameHash) {
-            const data = nameHash[i2];
-            Object.defineProperty(uniformsOut, data.name, {
+            const data2 = nameHash[i2];
+            Object.defineProperty(uniformsOut, data2.name, {
               get() {
-                return groups[data.group].getResource(data.binding);
+                return groups[data2.group].getResource(data2.binding);
               },
               set(value) {
-                groups[data.group].setResource(value, data.binding);
+                groups[data2.group].setResource(value, data2.binding);
               }
             });
           }
@@ -25021,14 +25021,14 @@ ${parts.join("\n")}
          * @returns The mapped matrix.
          */
         calculateSpriteMatrix(outputMatrix, sprite) {
-          const data = this._activeFilterData;
+          const data2 = this._activeFilterData;
           const mappedMatrix = outputMatrix.set(
-            data.inputTexture._source.width,
+            data2.inputTexture._source.width,
             0,
             0,
-            data.inputTexture._source.height,
-            data.bounds.minX,
-            data.bounds.minY
+            data2.inputTexture._source.height,
+            data2.bounds.minX,
+            data2.bounds.minY
           );
           const worldTransform = sprite.worldTransform.copyTo(Matrix.shared);
           worldTransform.invert();
@@ -28103,16 +28103,16 @@ ${parts.join("\n")}
         }
         updateBuffer(buffer) {
           const gpuBuffer = this._gpuBuffers[buffer.uid] || this.createGPUBuffer(buffer);
-          const data = buffer.data;
-          if (buffer._updateID && data) {
+          const data2 = buffer.data;
+          if (buffer._updateID && data2) {
             buffer._updateID = 0;
             this._gpu.device.queue.writeBuffer(
               gpuBuffer,
               0,
-              data.buffer,
+              data2.buffer,
               0,
               // round to the nearest 4 bytes
-              (buffer._updateSize || data.byteLength) + 3 & ~3
+              (buffer._updateSize || data2.byteLength) + 3 & ~3
             );
           }
           return gpuBuffer;
@@ -28552,15 +28552,15 @@ ${parts.join("\n")}
         _generateUboSync(uboElements) {
           return this._adaptor.generateUboSync(uboElements);
         }
-        syncUniformGroup(uniformGroup, data, offset) {
+        syncUniformGroup(uniformGroup, data2, offset) {
           const uniformGroupData = this.getUniformGroupData(uniformGroup);
           uniformGroup.buffer || (uniformGroup.buffer = new Buffer2({
             data: new Float32Array(uniformGroupData.layout.size / 4),
             usage: BufferUsage.UNIFORM | BufferUsage.COPY_DST
           }));
-          data || (data = uniformGroup.buffer.data);
+          data2 || (data2 = uniformGroup.buffer.data);
           offset || (offset = 0);
-          uniformGroupData.syncFunction(uniformGroup.uniforms, data, offset);
+          uniformGroupData.syncFunction(uniformGroup.uniforms, data2, offset);
           return true;
         }
         updateUniformGroup(uniformGroup) {
@@ -28580,8 +28580,8 @@ ${parts.join("\n")}
 
   // node_modules/pixi.js/lib/rendering/renderers/gpu/shader/utils/createUboElementsWGSL.mjs
   function createUboElementsWGSL(uniformData) {
-    const uboElements = uniformData.map((data) => ({
-      data,
+    const uboElements = uniformData.map((data2) => ({
+      data: data2,
       offset: 0,
       size: 0
     }));
@@ -28656,8 +28656,8 @@ ${parts.join("\n")}
         // uploading pixi matrix object to mat3
         {
           type: "mat3x3<f32>",
-          test: (data) => {
-            const value = data.value;
+          test: (data2) => {
+            const value = data2.value;
             return value.a !== void 0;
           },
           ubo: `
@@ -28679,7 +28679,7 @@ ${parts.join("\n")}
         // uploading a pixi rectangle as a vec4
         {
           type: "vec4<f32>",
-          test: (data) => data.type === "vec4<f32>" && data.size === 1 && data.value.width !== void 0,
+          test: (data2) => data2.type === "vec4<f32>" && data2.size === 1 && data2.value.width !== void 0,
           ubo: `
             v = uv[name];
             data[offset] = v.x;
@@ -28702,7 +28702,7 @@ ${parts.join("\n")}
         // uploading a pixi point as a vec2
         {
           type: "vec2<f32>",
-          test: (data) => data.type === "vec2<f32>" && data.size === 1 && data.value.x !== void 0,
+          test: (data2) => data2.type === "vec2<f32>" && data2.size === 1 && data2.value.x !== void 0,
           ubo: `
             v = uv[name];
             data[offset] = v.x;
@@ -28721,7 +28721,7 @@ ${parts.join("\n")}
         // uploading a pixi color as a vec4
         {
           type: "vec4<f32>",
-          test: (data) => data.type === "vec4<f32>" && data.size === 1 && data.value.red !== void 0,
+          test: (data2) => data2.type === "vec4<f32>" && data2.size === 1 && data2.value.red !== void 0,
           ubo: `
             v = uv[name];
             data[offset] = v.red;
@@ -28744,7 +28744,7 @@ ${parts.join("\n")}
         // uploading a pixi color as a vec3
         {
           type: "vec3<f32>",
-          test: (data) => data.type === "vec3<f32>" && data.size === 1 && data.value.red !== void 0,
+          test: (data2) => data2.type === "vec3<f32>" && data2.size === 1 && data2.value.red !== void 0,
           ubo: `
             v = uv[name];
             data[offset] = v.red;
@@ -29104,24 +29104,24 @@ ${parts.join("\n")}
             return this._bindGroupHash[group.uid];
           }
           this._renderer.ubo.ensureUniformGroup(group);
-          const data = group.buffer.data;
-          const offset = this._batchBuffer.addEmptyGroup(data.length);
+          const data2 = group.buffer.data;
+          const offset = this._batchBuffer.addEmptyGroup(data2.length);
           this._renderer.ubo.syncUniformGroup(group, this._batchBuffer.data, offset / 4);
           this._bindGroupHash[group.uid] = this._getBindGroup(offset / minUniformOffsetAlignment);
           return this._bindGroupHash[group.uid];
         }
         getUboResource(group) {
           this._renderer.ubo.updateUniformGroup(group);
-          const data = group.buffer.data;
-          const offset = this._batchBuffer.addGroup(data);
+          const data2 = group.buffer.data;
+          const offset = this._batchBuffer.addGroup(data2);
           return this._getBufferResource(offset / minUniformOffsetAlignment);
         }
-        getArrayBindGroup(data) {
-          const offset = this._batchBuffer.addGroup(data);
+        getArrayBindGroup(data2) {
+          const offset = this._batchBuffer.addGroup(data2);
           return this._getBindGroup(offset / minUniformOffsetAlignment);
         }
-        getArrayBufferResource(data) {
-          const offset = this._batchBuffer.addGroup(data);
+        getArrayBufferResource(data2) {
+          const offset = this._batchBuffer.addGroup(data2);
           const index = offset / minUniformOffsetAlignment;
           return this._getBufferResource(index);
         }
@@ -31088,13 +31088,13 @@ ${parts.join("\n")}
           }
           glBuffer.updateID = buffer._updateID;
           gl.bindBuffer(glBuffer.type, glBuffer.buffer);
-          const data = buffer.data;
+          const data2 = buffer.data;
           if (glBuffer.byteLength >= buffer.data.byteLength) {
-            gl.bufferSubData(glBuffer.type, 0, data, 0, buffer._updateSize / data.BYTES_PER_ELEMENT);
+            gl.bufferSubData(glBuffer.type, 0, data2, 0, buffer._updateSize / data2.BYTES_PER_ELEMENT);
           } else {
             const drawType = buffer.descriptor.usage & BufferUsage.STATIC ? gl.STATIC_DRAW : gl.DYNAMIC_DRAW;
-            glBuffer.byteLength = data.byteLength;
-            gl.bufferData(glBuffer.type, data, drawType);
+            glBuffer.byteLength = data2.byteLength;
+            gl.bufferData(glBuffer.type, data2, drawType);
           }
           return glBuffer;
         }
@@ -32090,8 +32090,8 @@ ${parts.join("\n")}
 
   // node_modules/pixi.js/lib/rendering/renderers/gl/shader/utils/createUboElementsSTD40.mjs
   function createUboElementsSTD40(uniformData) {
-    const uboElements = uniformData.map((data) => ({
-      data,
+    const uboElements = uniformData.map((data2) => ({
+      data: data2,
       offset: 0,
       size: 0
     }));
@@ -32982,10 +32982,10 @@ ${parts.join("\n")}
     gl.deleteShader(glFragShader);
     const uniformData = {};
     for (const i2 in program._uniformData) {
-      const data = program._uniformData[i2];
+      const data2 = program._uniformData[i2];
       uniformData[i2] = {
         location: gl.getUniformLocation(webGLProgram, i2),
-        value: defaultValue(data.type, data.size)
+        value: defaultValue(data2.type, data2.size)
       };
     }
     const glProgram2 = new GlProgramData(webGLProgram, uniformData);
@@ -34825,1031 +34825,2052 @@ ${parts.join("\n")}
   var Application = _Application;
   extensions.handleByList(ExtensionType.Application, Application._plugins);
 
-  // node_modules/pixi.js/lib/scene/text/AbstractText.mjs
-  init_ObservablePoint();
-  init_deprecation();
-  init_Bounds();
-  init_Container();
-  var AbstractText = class extends Container {
-    constructor(options, styleClass) {
-      const { text, resolution, style, anchor, width, height, roundPixels, ...rest } = options;
-      super({
-        ...rest
+  // node_modules/pixi.js/lib/assets/Assets.mjs
+  init_Extensions();
+  init_warn();
+
+  // node_modules/pixi.js/lib/assets/BackgroundLoader.mjs
+  var BackgroundLoader = class {
+    /**
+     * @param loader
+     * @param verbose - should the loader log to the console
+     */
+    constructor(loader, verbose = false) {
+      this._loader = loader;
+      this._assetList = [];
+      this._isLoading = false;
+      this._maxConcurrent = 1;
+      this.verbose = verbose;
+    }
+    /**
+     * Adds an array of assets to load.
+     * @param assetUrls - assets to load
+     */
+    add(assetUrls) {
+      assetUrls.forEach((a2) => {
+        this._assetList.push(a2);
       });
-      this.batched = true;
-      this.resolution = null;
-      this._didTextUpdate = true;
-      this._roundPixels = 0;
-      this._bounds = new Bounds();
-      this._boundsDirty = true;
-      this._styleClass = styleClass;
-      this.text = text ?? "";
-      this.style = style;
-      this.resolution = resolution ?? null;
-      this.allowChildren = false;
-      this._anchor = new ObservablePoint(
-        {
-          _onUpdate: () => {
-            this.onViewUpdate();
-          }
+      if (this.verbose) {
+        console.log("[BackgroundLoader] assets: ", this._assetList);
+      }
+      if (this._isActive && !this._isLoading) {
+        void this._next();
+      }
+    }
+    /**
+     * Loads the next set of assets. Will try to load as many assets as it can at the same time.
+     *
+     * The max assets it will try to load at one time will be 4.
+     */
+    async _next() {
+      if (this._assetList.length && this._isActive) {
+        this._isLoading = true;
+        const toLoad = [];
+        const toLoadAmount = Math.min(this._assetList.length, this._maxConcurrent);
+        for (let i2 = 0; i2 < toLoadAmount; i2++) {
+          toLoad.push(this._assetList.pop());
         }
-      );
-      if (anchor)
-        this.anchor = anchor;
-      this.roundPixels = roundPixels ?? false;
-      if (width)
-        this.width = width;
-      if (height)
-        this.height = height;
+        await this._loader.load(toLoad);
+        this._isLoading = false;
+        void this._next();
+      }
     }
     /**
-     * The anchor sets the origin point of the text.
-     * The default is `(0,0)`, this means the text's origin is the top left.
-     *
-     * Setting the anchor to `(0.5,0.5)` means the text's origin is centered.
-     *
-     * Setting the anchor to `(1,1)` would mean the text's origin point will be the bottom right corner.
-     *
-     * If you pass only single parameter, it will set both x and y to the same value as shown in the example below.
-     * @example
-     * import { Text } from 'pixi.js';
-     *
-     * const text = new Text('hello world');
-     * text.anchor.set(0.5); // This will set the origin to center. (0.5) is same as (0.5, 0.5).
+     * Activate/Deactivate the loading. If set to true then it will immediately continue to load the next asset.
+     * @returns whether the class is active
      */
-    get anchor() {
-      return this._anchor;
+    get active() {
+      return this._isActive;
     }
-    set anchor(value) {
-      typeof value === "number" ? this._anchor.set(value) : this._anchor.copyFrom(value);
-    }
-    /**
-     *  Whether or not to round the x/y position of the text.
-     * @type {boolean}
-     */
-    get roundPixels() {
-      return !!this._roundPixels;
-    }
-    set roundPixels(value) {
-      this._roundPixels = value ? 1 : 0;
-    }
-    /** Set the copy for the text object. To split a line you can use '\n'. */
-    set text(value) {
-      value = value.toString();
-      if (this._text === value)
+    set active(value) {
+      if (this._isActive === value)
         return;
-      this._text = value;
-      this.onViewUpdate();
-    }
-    get text() {
-      return this._text;
-    }
-    get style() {
-      return this._style;
-    }
-    /**
-     * Set the style of the text.
-     *
-     * Set up an event listener to listen for changes on the style object and mark the text as dirty.
-     *
-     * If setting the `style` can also be partial {@link AnyTextStyleOptions}.
-     * @type {
-     * text.TextStyle |
-     * Partial<text.TextStyle> |
-     * text.TextStyleOptions |
-     * text.HTMLTextStyle |
-     * Partial<text.HTMLTextStyle> |
-     * text.HTMLTextStyleOptions
-     * }
-     */
-    set style(style) {
-      style = style || {};
-      this._style?.off("update", this.onViewUpdate, this);
-      if (style instanceof this._styleClass) {
-        this._style = style;
-      } else {
-        this._style = new this._styleClass(style);
+      this._isActive = value;
+      if (value && !this._isLoading) {
+        void this._next();
       }
-      this._style.on("update", this.onViewUpdate, this);
-      this.onViewUpdate();
     }
-    /**
-     * The local bounds of the Text.
-     * @type {rendering.Bounds}
-     */
-    get bounds() {
-      if (this._boundsDirty) {
-        this._updateBounds();
-        this._boundsDirty = false;
-      }
-      return this._bounds;
-    }
-    /** The width of the sprite, setting this will actually modify the scale to achieve the value set. */
-    get width() {
-      return Math.abs(this.scale.x) * this.bounds.width;
-    }
-    set width(value) {
-      this._setWidth(value, this.bounds.width);
-    }
-    /** The height of the sprite, setting this will actually modify the scale to achieve the value set. */
-    get height() {
-      return Math.abs(this.scale.y) * this.bounds.height;
-    }
-    set height(value) {
-      this._setHeight(value, this.bounds.height);
-    }
-    /**
-     * Retrieves the size of the Text as a [Size]{@link Size} object.
-     * This is faster than get the width and height separately.
-     * @param out - Optional object to store the size in.
-     * @returns - The size of the Text.
-     */
-    getSize(out2) {
-      if (!out2) {
-        out2 = {};
-      }
-      out2.width = Math.abs(this.scale.x) * this.bounds.width;
-      out2.height = Math.abs(this.scale.y) * this.bounds.height;
+  };
+
+  // node_modules/pixi.js/lib/assets/Assets.mjs
+  init_Cache();
+
+  // node_modules/pixi.js/lib/assets/cache/parsers/cacheTextureArray.mjs
+  init_Extensions();
+  init_Texture();
+  var cacheTextureArray = {
+    extension: ExtensionType.CacheParser,
+    test: (asset) => Array.isArray(asset) && asset.every((t2) => t2 instanceof Texture),
+    getCacheableAssets: (keys, asset) => {
+      const out2 = {};
+      keys.forEach((key) => {
+        asset.forEach((item, i2) => {
+          out2[key + (i2 === 0 ? "" : i2 + 1)] = item;
+        });
+      });
       return out2;
     }
-    /**
-     * Sets the size of the Text to the specified width and height.
-     * This is faster than setting the width and height separately.
-     * @param value - This can be either a number or a [Size]{@link Size} object.
-     * @param height - The height to set. Defaults to the value of `width` if not provided.
-     */
-    setSize(value, height) {
-      let convertedWidth;
-      let convertedHeight;
-      if (typeof value !== "object") {
-        convertedWidth = value;
-        convertedHeight = height ?? value;
-      } else {
-        convertedWidth = value.width;
-        convertedHeight = value.height ?? value.width;
+  };
+
+  // node_modules/pixi.js/lib/assets/detections/parsers/detectAvif.mjs
+  init_Extensions();
+
+  // node_modules/pixi.js/lib/assets/detections/utils/testImageFormat.mjs
+  async function testImageFormat(imageData) {
+    if ("Image" in globalThis) {
+      return new Promise((resolve) => {
+        const image = new Image();
+        image.onload = () => {
+          resolve(true);
+        };
+        image.onerror = () => {
+          resolve(false);
+        };
+        image.src = imageData;
+      });
+    }
+    if ("createImageBitmap" in globalThis && "fetch" in globalThis) {
+      try {
+        const blob = await (await fetch(imageData)).blob();
+        await createImageBitmap(blob);
+      } catch (e2) {
+        return false;
       }
-      if (convertedWidth !== void 0) {
-        this._setWidth(convertedWidth, this.bounds.width);
-      }
-      if (convertedHeight !== void 0) {
-        this._setHeight(convertedHeight, this.bounds.height);
-      }
+      return true;
+    }
+    return false;
+  }
+
+  // node_modules/pixi.js/lib/assets/detections/parsers/detectAvif.mjs
+  var detectAvif = {
+    extension: {
+      type: ExtensionType.DetectionParser,
+      priority: 1
+    },
+    test: async () => testImageFormat(
+      // eslint-disable-next-line max-len
+      "data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A="
+    ),
+    add: async (formats) => [...formats, "avif"],
+    remove: async (formats) => formats.filter((f2) => f2 !== "avif")
+  };
+
+  // node_modules/pixi.js/lib/assets/detections/parsers/detectDefaults.mjs
+  init_Extensions();
+  var imageFormats = ["png", "jpg", "jpeg"];
+  var detectDefaults = {
+    extension: {
+      type: ExtensionType.DetectionParser,
+      priority: -1
+    },
+    test: () => Promise.resolve(true),
+    add: async (formats) => [...formats, ...imageFormats],
+    remove: async (formats) => formats.filter((f2) => !imageFormats.includes(f2))
+  };
+
+  // node_modules/pixi.js/lib/assets/detections/parsers/detectMp4.mjs
+  init_Extensions();
+
+  // node_modules/pixi.js/lib/assets/detections/utils/testVideoFormat.mjs
+  var inWorker = "WorkerGlobalScope" in globalThis && globalThis instanceof globalThis.WorkerGlobalScope;
+  function testVideoFormat(mimeType) {
+    if (inWorker) {
+      return false;
+    }
+    const video = document.createElement("video");
+    return video.canPlayType(mimeType) !== "";
+  }
+
+  // node_modules/pixi.js/lib/assets/detections/parsers/detectMp4.mjs
+  var detectMp4 = {
+    extension: {
+      type: ExtensionType.DetectionParser,
+      priority: 0
+    },
+    test: async () => testVideoFormat("video/mp4"),
+    add: async (formats) => [...formats, "mp4", "m4v"],
+    remove: async (formats) => formats.filter((f2) => f2 !== "mp4" && f2 !== "m4v")
+  };
+
+  // node_modules/pixi.js/lib/assets/detections/parsers/detectOgv.mjs
+  init_Extensions();
+  var detectOgv = {
+    extension: {
+      type: ExtensionType.DetectionParser,
+      priority: 0
+    },
+    test: async () => testVideoFormat("video/ogg"),
+    add: async (formats) => [...formats, "ogv"],
+    remove: async (formats) => formats.filter((f2) => f2 !== "ogv")
+  };
+
+  // node_modules/pixi.js/lib/assets/detections/parsers/detectWebm.mjs
+  init_Extensions();
+  var detectWebm = {
+    extension: {
+      type: ExtensionType.DetectionParser,
+      priority: 0
+    },
+    test: async () => testVideoFormat("video/webm"),
+    add: async (formats) => [...formats, "webm"],
+    remove: async (formats) => formats.filter((f2) => f2 !== "webm")
+  };
+
+  // node_modules/pixi.js/lib/assets/detections/parsers/detectWebp.mjs
+  init_Extensions();
+  var detectWebp = {
+    extension: {
+      type: ExtensionType.DetectionParser,
+      priority: 0
+    },
+    test: async () => testImageFormat(
+      "data:image/webp;base64,UklGRh4AAABXRUJQVlA4TBEAAAAvAAAAAAfQ//73v/+BiOh/AAA="
+    ),
+    add: async (formats) => [...formats, "webp"],
+    remove: async (formats) => formats.filter((f2) => f2 !== "webp")
+  };
+
+  // node_modules/pixi.js/lib/assets/loader/Loader.mjs
+  init_warn();
+  init_path();
+  init_convertToList();
+  init_isSingleItem();
+  var Loader = class {
+    constructor() {
+      this._parsers = [];
+      this._parsersValidated = false;
+      this.parsers = new Proxy(this._parsers, {
+        set: (target, key, value) => {
+          this._parsersValidated = false;
+          target[key] = value;
+          return true;
+        }
+      });
+      this.promiseCache = {};
+    }
+    /** function used for testing */
+    reset() {
+      this._parsersValidated = false;
+      this.promiseCache = {};
     }
     /**
-     * Adds the bounds of this text to the bounds object.
-     * @param bounds - The output bounds object.
+     * Used internally to generate a promise for the asset to be loaded.
+     * @param url - The URL to be loaded
+     * @param data - any custom additional information relevant to the asset being loaded
+     * @returns - a promise that will resolve to an Asset for example a Texture of a JSON object
      */
-    addBounds(bounds) {
-      const _bounds = this.bounds;
-      bounds.addFrame(
-        _bounds.minX,
-        _bounds.minY,
-        _bounds.maxX,
-        _bounds.maxY
-      );
+    _getLoadPromiseAndParser(url, data2) {
+      const result = {
+        promise: null,
+        parser: null
+      };
+      result.promise = (async () => {
+        let asset = null;
+        let parser = null;
+        if (data2.loadParser) {
+          parser = this._parserHash[data2.loadParser];
+          if (!parser) {
+            warn(`[Assets] specified load parser "${data2.loadParser}" not found while loading ${url}`);
+          }
+        }
+        if (!parser) {
+          for (let i2 = 0; i2 < this.parsers.length; i2++) {
+            const parserX = this.parsers[i2];
+            if (parserX.load && parserX.test?.(url, data2, this)) {
+              parser = parserX;
+              break;
+            }
+          }
+          if (!parser) {
+            warn(`[Assets] ${url} could not be loaded as we don't know how to parse it, ensure the correct parser has been added`);
+            return null;
+          }
+        }
+        asset = await parser.load(url, data2, this);
+        result.parser = parser;
+        for (let i2 = 0; i2 < this.parsers.length; i2++) {
+          const parser2 = this.parsers[i2];
+          if (parser2.parse) {
+            if (parser2.parse && await parser2.testParse?.(asset, data2, this)) {
+              asset = await parser2.parse(asset, data2, this) || asset;
+              result.parser = parser2;
+            }
+          }
+        }
+        return asset;
+      })();
+      return result;
+    }
+    async load(assetsToLoadIn, onProgress) {
+      if (!this._parsersValidated) {
+        this._validateParsers();
+      }
+      let count2 = 0;
+      const assets = {};
+      const singleAsset = isSingleItem(assetsToLoadIn);
+      const assetsToLoad = convertToList(assetsToLoadIn, (item) => ({
+        alias: [item],
+        src: item
+      }));
+      const total = assetsToLoad.length;
+      const promises = assetsToLoad.map(async (asset) => {
+        const url = path.toAbsolute(asset.src);
+        if (!assets[asset.src]) {
+          try {
+            if (!this.promiseCache[url]) {
+              this.promiseCache[url] = this._getLoadPromiseAndParser(url, asset);
+            }
+            assets[asset.src] = await this.promiseCache[url].promise;
+            if (onProgress)
+              onProgress(++count2 / total);
+          } catch (e2) {
+            delete this.promiseCache[url];
+            delete assets[asset.src];
+            throw new Error(`[Loader.load] Failed to load ${url}.
+${e2}`);
+          }
+        }
+      });
+      await Promise.all(promises);
+      return singleAsset ? assets[assetsToLoad[0].src] : assets;
     }
     /**
-     * Checks if the text contains the given point.
-     * @param point - The point to check
+     * Unloads one or more assets. Any unloaded assets will be destroyed, freeing up memory for your app.
+     * The parser that created the asset, will be the one that unloads it.
+     * @example
+     * // Single asset:
+     * const asset = await Loader.load('cool.png');
+     *
+     * await Loader.unload('cool.png');
+     *
+     * console.log(asset.destroyed); // true
+     * @param assetsToUnloadIn - urls that you want to unload, or a single one!
      */
-    containsPoint(point) {
-      const width = this.bounds.maxX;
-      const height = this.bounds.maxY;
-      const x1 = -width * this.anchor.x;
-      let y1 = 0;
-      if (point.x >= x1 && point.x <= x1 + width) {
-        y1 = -height * this.anchor.y;
-        if (point.y >= y1 && point.y <= y1 + height)
+    async unload(assetsToUnloadIn) {
+      const assetsToUnload = convertToList(assetsToUnloadIn, (item) => ({
+        alias: [item],
+        src: item
+      }));
+      const promises = assetsToUnload.map(async (asset) => {
+        const url = path.toAbsolute(asset.src);
+        const loadPromise = this.promiseCache[url];
+        if (loadPromise) {
+          const loadedAsset = await loadPromise.promise;
+          delete this.promiseCache[url];
+          await loadPromise.parser?.unload?.(loadedAsset, asset, this);
+        }
+      });
+      await Promise.all(promises);
+    }
+    /** validates our parsers, right now it only checks for name conflicts but we can add more here as required! */
+    _validateParsers() {
+      this._parsersValidated = true;
+      this._parserHash = this._parsers.filter((parser) => parser.name).reduce((hash, parser) => {
+        if (!parser.name) {
+          warn(`[Assets] loadParser should have a name`);
+        } else if (hash[parser.name]) {
+          warn(`[Assets] loadParser name conflict "${parser.name}"`);
+        }
+        return { ...hash, [parser.name]: parser };
+      }, {});
+    }
+  };
+
+  // node_modules/pixi.js/lib/assets/loader/parsers/loadJson.mjs
+  init_adapter();
+  init_Extensions();
+
+  // node_modules/pixi.js/lib/assets/utils/checkDataUrl.mjs
+  function checkDataUrl(url, mimes) {
+    if (Array.isArray(mimes)) {
+      for (const mime of mimes) {
+        if (url.startsWith(`data:${mime}`))
           return true;
       }
       return false;
     }
-    onViewUpdate() {
-      this._didChangeId += 1 << 12;
-      this._boundsDirty = true;
-      if (this.didViewUpdate)
-        return;
-      this.didViewUpdate = true;
-      this._didTextUpdate = true;
-      if (this.renderGroup) {
-        this.renderGroup.onChildViewUpdate(this);
-      }
-    }
-    _getKey() {
-      return `${this.text}:${this._style.styleKey}`;
-    }
-    /**
-     * Destroys this text renderable and optionally its style texture.
-     * @param options - Options parameter. A boolean will act as if all options
-     *  have been set to that value
-     * @param {boolean} [options.texture=false] - Should it destroy the texture of the text style
-     * @param {boolean} [options.textureSource=false] - Should it destroy the textureSource of the text style
-     * @param {boolean} [options.style=false] - Should it destroy the style of the text
-     */
-    destroy(options = false) {
-      super.destroy(options);
-      this.owner = null;
-      this._bounds = null;
-      this._anchor = null;
-      if (typeof options === "boolean" ? options : options?.style) {
-        this._style.destroy(options);
-      }
-      this._style = null;
-      this._text = null;
-    }
-  };
-  function ensureOptions(args, name) {
-    let options = args[0] ?? {};
-    if (typeof options === "string" || args[1]) {
-      deprecation(v8_0_0, `use new ${name}({ text: "hi!", style }) instead`);
-      options = {
-        text: options,
-        style: args[1]
-      };
-    }
-    return options;
+    return url.startsWith(`data:${mimes}`);
   }
 
-  // node_modules/pixi.js/lib/scene/text/Text.mjs
-  init_CanvasTextMetrics();
-  init_TextStyle();
-  var Text = class extends AbstractText {
-    constructor(...args) {
-      const options = ensureOptions(args, "Text");
-      super(options, TextStyle);
-      this.renderPipeId = "text";
+  // node_modules/pixi.js/lib/assets/utils/checkExtension.mjs
+  init_path();
+  function checkExtension(url, extension) {
+    const tempURL = url.split("?")[0];
+    const ext = path.extname(tempURL).toLowerCase();
+    if (Array.isArray(extension)) {
+      return extension.includes(ext);
     }
-    _updateBounds() {
-      const bounds = this._bounds;
-      const padding = this._style.padding;
-      const anchor = this._anchor;
-      const canvasMeasurement = CanvasTextMetrics.measureText(
-        this._text,
-        this._style
-      );
-      const { width, height } = canvasMeasurement;
-      bounds.minX = -anchor._x * width - padding;
-      bounds.maxX = bounds.minX + width;
-      bounds.minY = -anchor._y * height - padding;
-      bounds.maxY = bounds.minY + height;
+    return ext === extension;
+  }
+
+  // node_modules/pixi.js/lib/assets/loader/parsers/loadJson.mjs
+  init_LoaderParser();
+  var validJSONExtension = ".json";
+  var validJSONMIME = "application/json";
+  var loadJson = {
+    extension: {
+      type: ExtensionType.LoadParser,
+      priority: LoaderParserPriority.Low
+    },
+    name: "loadJson",
+    test(url) {
+      return checkDataUrl(url, validJSONMIME) || checkExtension(url, validJSONExtension);
+    },
+    async load(url) {
+      const response = await DOMAdapter.get().fetch(url);
+      const json = await response.json();
+      return json;
     }
   };
 
+  // node_modules/pixi.js/lib/assets/loader/parsers/loadTxt.mjs
+  init_adapter();
+  init_Extensions();
+  init_LoaderParser();
+  var validTXTExtension = ".txt";
+  var validTXTMIME = "text/plain";
+  var loadTxt = {
+    name: "loadTxt",
+    extension: {
+      type: ExtensionType.LoadParser,
+      priority: LoaderParserPriority.Low
+    },
+    test(url) {
+      return checkDataUrl(url, validTXTMIME) || checkExtension(url, validTXTExtension);
+    },
+    async load(url) {
+      const response = await DOMAdapter.get().fetch(url);
+      const txt = await response.text();
+      return txt;
+    }
+  };
+
+  // node_modules/pixi.js/lib/assets/loader/parsers/loadWebFont.mjs
+  init_adapter();
+  init_Extensions();
+  init_warn();
+  init_path();
+  init_Cache();
+  init_LoaderParser();
+  var validWeights = [
+    "normal",
+    "bold",
+    "100",
+    "200",
+    "300",
+    "400",
+    "500",
+    "600",
+    "700",
+    "800",
+    "900"
+  ];
+  var validFontExtensions = [".ttf", ".otf", ".woff", ".woff2"];
+  var validFontMIMEs = [
+    "font/ttf",
+    "font/otf",
+    "font/woff",
+    "font/woff2"
+  ];
+  var CSS_IDENT_TOKEN_REGEX = /^(--|-?[A-Z_])[0-9A-Z_-]*$/i;
+  function getFontFamilyName(url) {
+    const ext = path.extname(url);
+    const name = path.basename(url, ext);
+    const nameWithSpaces = name.replace(/(-|_)/g, " ");
+    const nameTokens = nameWithSpaces.toLowerCase().split(" ").map((word) => word.charAt(0).toUpperCase() + word.slice(1));
+    let valid = nameTokens.length > 0;
+    for (const token of nameTokens) {
+      if (!token.match(CSS_IDENT_TOKEN_REGEX)) {
+        valid = false;
+        break;
+      }
+    }
+    let fontFamilyName = nameTokens.join(" ");
+    if (!valid) {
+      fontFamilyName = `"${fontFamilyName.replace(/[\\"]/g, "\\$&")}"`;
+    }
+    return fontFamilyName;
+  }
+  var validURICharactersRegex = /^[0-9A-Za-z%:/?#\[\]@!\$&'()\*\+,;=\-._~]*$/;
+  function encodeURIWhenNeeded(uri) {
+    if (validURICharactersRegex.test(uri)) {
+      return uri;
+    }
+    return encodeURI(uri);
+  }
+  var loadWebFont = {
+    extension: {
+      type: ExtensionType.LoadParser,
+      priority: LoaderParserPriority.Low
+    },
+    name: "loadWebFont",
+    test(url) {
+      return checkDataUrl(url, validFontMIMEs) || checkExtension(url, validFontExtensions);
+    },
+    async load(url, options) {
+      const fonts = DOMAdapter.get().getFontFaceSet();
+      if (fonts) {
+        const fontFaces = [];
+        const name = options.data?.family ?? getFontFamilyName(url);
+        const weights = options.data?.weights?.filter((weight) => validWeights.includes(weight)) ?? ["normal"];
+        const data2 = options.data ?? {};
+        for (let i2 = 0; i2 < weights.length; i2++) {
+          const weight = weights[i2];
+          const font = new FontFace(name, `url(${encodeURIWhenNeeded(url)})`, {
+            ...data2,
+            weight
+          });
+          await font.load();
+          fonts.add(font);
+          fontFaces.push(font);
+        }
+        Cache.set(`${name}-and-url`, {
+          url,
+          fontFaces
+        });
+        return fontFaces.length === 1 ? fontFaces[0] : fontFaces;
+      }
+      warn("[loadWebFont] FontFace API is not supported. Skipping loading font");
+      return null;
+    },
+    unload(font) {
+      (Array.isArray(font) ? font : [font]).forEach((t2) => {
+        Cache.remove(t2.family);
+        DOMAdapter.get().getFontFaceSet().delete(t2);
+      });
+    }
+  };
+
+  // node_modules/pixi.js/lib/assets/loader/parsers/textures/loadSVG.mjs
+  init_adapter();
+  init_Extensions();
+  init_ImageSource();
+  init_GraphicsContext();
+
+  // node_modules/pixi.js/lib/utils/network/getResolutionOfUrl.mjs
+  init_Resolver();
+  function getResolutionOfUrl(url, defaultValue2 = 1) {
+    const resolution = Resolver.RETINA_PREFIX?.exec(url);
+    if (resolution) {
+      return parseFloat(resolution[1]);
+    }
+    return defaultValue2;
+  }
+
+  // node_modules/pixi.js/lib/assets/loader/parsers/textures/loadSVG.mjs
+  init_LoaderParser();
+
+  // node_modules/pixi.js/lib/assets/loader/parsers/textures/utils/createTexture.mjs
+  init_Texture();
+  init_warn();
+  init_Cache();
+  function createTexture(source2, loader, url) {
+    source2.label = url;
+    source2._sourceOrigin = url;
+    const texture = new Texture({
+      source: source2,
+      label: url
+    });
+    const unload = () => {
+      delete loader.promiseCache[url];
+      if (Cache.has(url)) {
+        Cache.remove(url);
+      }
+    };
+    texture.source.once("destroy", () => {
+      if (loader.promiseCache[url]) {
+        warn("[Assets] A TextureSource managed by Assets was destroyed instead of unloaded! Use Assets.unload() instead of destroying the TextureSource.");
+        unload();
+      }
+    });
+    texture.once("destroy", () => {
+      if (!source2.destroyed) {
+        warn("[Assets] A Texture managed by Assets was destroyed instead of unloaded! Use Assets.unload() instead of destroying the Texture.");
+        unload();
+      }
+    });
+    return texture;
+  }
+
+  // node_modules/pixi.js/lib/assets/loader/parsers/textures/loadSVG.mjs
+  var validSVGExtension = ".svg";
+  var validSVGMIME = "image/svg+xml";
+  var loadSvg = {
+    extension: {
+      type: ExtensionType.LoadParser,
+      priority: LoaderParserPriority.Low
+    },
+    name: "loadSVG",
+    config: {
+      crossOrigin: "anonymous",
+      parseAsGraphicsContext: false
+    },
+    test(url) {
+      return checkDataUrl(url, validSVGMIME) || checkExtension(url, validSVGExtension);
+    },
+    async load(url, asset, loader) {
+      if (asset.data.parseAsGraphicsContext ?? this.config.parseAsGraphicsContext) {
+        return loadAsGraphics(url);
+      }
+      return loadAsTexture(url, asset, loader, this.config.crossOrigin);
+    },
+    unload(asset) {
+      asset.destroy(true);
+    }
+  };
+  async function loadAsTexture(url, asset, loader, crossOrigin2) {
+    const response = await DOMAdapter.get().fetch(url);
+    const blob = await response.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const image = new Image();
+    image.src = blobUrl;
+    image.crossOrigin = crossOrigin2;
+    await image.decode();
+    URL.revokeObjectURL(blobUrl);
+    const canvas = document.createElement("canvas");
+    const context2 = canvas.getContext("2d");
+    const resolution = asset.data?.resolution || getResolutionOfUrl(url);
+    const width = asset.data?.width ?? image.width;
+    const height = asset.data?.height ?? image.height;
+    canvas.width = width * resolution;
+    canvas.height = height * resolution;
+    context2.drawImage(image, 0, 0, width * resolution, height * resolution);
+    const { parseAsGraphicsContext: _p, ...rest } = asset.data;
+    const base = new ImageSource({
+      resource: canvas,
+      alphaMode: "premultiply-alpha-on-upload",
+      resolution,
+      ...rest
+    });
+    return createTexture(base, loader, url);
+  }
+  async function loadAsGraphics(url) {
+    const response = await DOMAdapter.get().fetch(url);
+    const svgSource = await response.text();
+    const context2 = new GraphicsContext();
+    context2.svg(svgSource);
+    return context2;
+  }
+
+  // node_modules/pixi.js/lib/assets/loader/parsers/textures/loadTextures.mjs
+  init_adapter();
+  init_Extensions();
+  init_ImageSource();
+
+  // node_modules/pixi.js/lib/_virtual/checkImageBitmap.worker.mjs
+  var WORKER_CODE = `(function () {
+    'use strict';
+
+    const WHITE_PNG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=";
+    async function checkImageBitmap() {
+      try {
+        if (typeof createImageBitmap !== "function")
+          return false;
+        const response = await fetch(WHITE_PNG);
+        const imageBlob = await response.blob();
+        const imageBitmap = await createImageBitmap(imageBlob);
+        return imageBitmap.width === 1 && imageBitmap.height === 1;
+      } catch (e) {
+        return false;
+      }
+    }
+    void checkImageBitmap().then((result) => {
+      self.postMessage(result);
+    });
+
+})();
+`;
+  var WORKER_URL = null;
+  var WorkerInstance = class {
+    constructor() {
+      if (!WORKER_URL) {
+        WORKER_URL = URL.createObjectURL(new Blob([WORKER_CODE], { type: "application/javascript" }));
+      }
+      this.worker = new Worker(WORKER_URL);
+    }
+  };
+  WorkerInstance.revokeObjectURL = function revokeObjectURL() {
+    if (WORKER_URL) {
+      URL.revokeObjectURL(WORKER_URL);
+      WORKER_URL = null;
+    }
+  };
+
+  // node_modules/pixi.js/lib/_virtual/loadImageBitmap.worker.mjs
+  var WORKER_CODE2 = "(function () {\n    'use strict';\n\n    async function loadImageBitmap(url) {\n      const response = await fetch(url);\n      if (!response.ok) {\n        throw new Error(`[WorkerManager.loadImageBitmap] Failed to fetch ${url}: ${response.status} ${response.statusText}`);\n      }\n      const imageBlob = await response.blob();\n      const imageBitmap = await createImageBitmap(imageBlob);\n      return imageBitmap;\n    }\n    self.onmessage = async (event) => {\n      try {\n        const imageBitmap = await loadImageBitmap(event.data.data[0]);\n        self.postMessage({\n          data: imageBitmap,\n          uuid: event.data.uuid,\n          id: event.data.id\n        }, [imageBitmap]);\n      } catch (e) {\n        self.postMessage({\n          error: e,\n          uuid: event.data.uuid,\n          id: event.data.id\n        });\n      }\n    };\n\n})();\n";
+  var WORKER_URL2 = null;
+  var WorkerInstance2 = class {
+    constructor() {
+      if (!WORKER_URL2) {
+        WORKER_URL2 = URL.createObjectURL(new Blob([WORKER_CODE2], { type: "application/javascript" }));
+      }
+      this.worker = new Worker(WORKER_URL2);
+    }
+  };
+  WorkerInstance2.revokeObjectURL = function revokeObjectURL2() {
+    if (WORKER_URL2) {
+      URL.revokeObjectURL(WORKER_URL2);
+      WORKER_URL2 = null;
+    }
+  };
+
+  // node_modules/pixi.js/lib/assets/loader/workers/WorkerManager.mjs
+  var UUID = 0;
+  var MAX_WORKERS;
+  var WorkerManagerClass = class {
+    constructor() {
+      this._initialized = false;
+      this._createdWorkers = 0;
+      this._workerPool = [];
+      this._queue = [];
+      this._resolveHash = {};
+    }
+    isImageBitmapSupported() {
+      if (this._isImageBitmapSupported !== void 0)
+        return this._isImageBitmapSupported;
+      this._isImageBitmapSupported = new Promise((resolve) => {
+        const { worker } = new WorkerInstance();
+        worker.addEventListener("message", (event) => {
+          worker.terminate();
+          WorkerInstance.revokeObjectURL();
+          resolve(event.data);
+        });
+      });
+      return this._isImageBitmapSupported;
+    }
+    loadImageBitmap(src) {
+      return this._run("loadImageBitmap", [src]);
+    }
+    async _initWorkers() {
+      if (this._initialized)
+        return;
+      this._initialized = true;
+    }
+    _getWorker() {
+      if (MAX_WORKERS === void 0) {
+        MAX_WORKERS = navigator.hardwareConcurrency || 4;
+      }
+      let worker = this._workerPool.pop();
+      if (!worker && this._createdWorkers < MAX_WORKERS) {
+        this._createdWorkers++;
+        worker = new WorkerInstance2().worker;
+        worker.addEventListener("message", (event) => {
+          this._complete(event.data);
+          this._returnWorker(event.target);
+          this._next();
+        });
+      }
+      return worker;
+    }
+    _returnWorker(worker) {
+      this._workerPool.push(worker);
+    }
+    _complete(data2) {
+      if (data2.error !== void 0) {
+        this._resolveHash[data2.uuid].reject(data2.error);
+      } else {
+        this._resolveHash[data2.uuid].resolve(data2.data);
+      }
+      this._resolveHash[data2.uuid] = null;
+    }
+    async _run(id, args) {
+      await this._initWorkers();
+      const promise2 = new Promise((resolve, reject) => {
+        this._queue.push({ id, arguments: args, resolve, reject });
+      });
+      this._next();
+      return promise2;
+    }
+    _next() {
+      if (!this._queue.length)
+        return;
+      const worker = this._getWorker();
+      if (!worker) {
+        return;
+      }
+      const toDo = this._queue.pop();
+      const id = toDo.id;
+      this._resolveHash[UUID] = { resolve: toDo.resolve, reject: toDo.reject };
+      worker.postMessage({
+        data: toDo.arguments,
+        uuid: UUID++,
+        id
+      });
+    }
+  };
+  var WorkerManager = new WorkerManagerClass();
+
+  // node_modules/pixi.js/lib/assets/loader/parsers/textures/loadTextures.mjs
+  init_LoaderParser();
+  var validImageExtensions = [".jpeg", ".jpg", ".png", ".webp", ".avif"];
+  var validImageMIMEs = [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/avif"
+  ];
+  async function loadImageBitmap(url) {
+    const response = await DOMAdapter.get().fetch(url);
+    if (!response.ok) {
+      throw new Error(`[loadImageBitmap] Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+    }
+    const imageBlob = await response.blob();
+    const imageBitmap = await createImageBitmap(imageBlob);
+    return imageBitmap;
+  }
+  var loadTextures = {
+    name: "loadTextures",
+    extension: {
+      type: ExtensionType.LoadParser,
+      priority: LoaderParserPriority.High
+    },
+    config: {
+      preferWorkers: true,
+      preferCreateImageBitmap: true,
+      crossOrigin: "anonymous"
+    },
+    test(url) {
+      return checkDataUrl(url, validImageMIMEs) || checkExtension(url, validImageExtensions);
+    },
+    async load(url, asset, loader) {
+      let src = null;
+      if (globalThis.createImageBitmap && this.config.preferCreateImageBitmap) {
+        if (this.config.preferWorkers && await WorkerManager.isImageBitmapSupported()) {
+          src = await WorkerManager.loadImageBitmap(url);
+        } else {
+          src = await loadImageBitmap(url);
+        }
+      } else {
+        src = await new Promise((resolve) => {
+          src = new Image();
+          src.crossOrigin = this.config.crossOrigin;
+          src.src = url;
+          if (src.complete) {
+            resolve(src);
+          } else {
+            src.onload = () => {
+              resolve(src);
+            };
+          }
+        });
+      }
+      const base = new ImageSource({
+        resource: src,
+        alphaMode: "premultiply-alpha-on-upload",
+        resolution: asset.data?.resolution || getResolutionOfUrl(url),
+        ...asset.data
+      });
+      return createTexture(base, loader, url);
+    },
+    unload(texture) {
+      texture.destroy(true);
+    }
+  };
+
+  // node_modules/pixi.js/lib/assets/loader/parsers/textures/loadVideoTextures.mjs
+  init_Extensions();
+  init_VideoSource();
+  init_detectVideoAlphaMode();
+  var validVideoExtensions = [".mp4", ".m4v", ".webm", ".ogg", ".ogv", ".h264", ".avi", ".mov"];
+  var validVideoMIMEs = validVideoExtensions.map((ext) => `video/${ext.substring(1)}`);
+  function crossOrigin(element, url, crossorigin) {
+    if (crossorigin === void 0 && !url.startsWith("data:")) {
+      element.crossOrigin = determineCrossOrigin(url);
+    } else if (crossorigin !== false) {
+      element.crossOrigin = typeof crossorigin === "string" ? crossorigin : "anonymous";
+    }
+  }
+  function preloadVideo(element) {
+    return new Promise((resolve, reject) => {
+      element.addEventListener("canplaythrough", loaded);
+      element.addEventListener("error", error);
+      element.load();
+      function loaded() {
+        cleanup();
+        resolve();
+      }
+      function error(err) {
+        cleanup();
+        reject(err);
+      }
+      function cleanup() {
+        element.removeEventListener("canplaythrough", loaded);
+        element.removeEventListener("error", error);
+      }
+    });
+  }
+  function determineCrossOrigin(url, loc = globalThis.location) {
+    if (url.startsWith("data:")) {
+      return "";
+    }
+    loc = loc || globalThis.location;
+    const parsedUrl = new URL(url, document.baseURI);
+    if (parsedUrl.hostname !== loc.hostname || parsedUrl.port !== loc.port || parsedUrl.protocol !== loc.protocol) {
+      return "anonymous";
+    }
+    return "";
+  }
+  var loadVideoTextures = {
+    name: "loadVideo",
+    extension: {
+      type: ExtensionType.LoadParser
+    },
+    config: null,
+    test(url) {
+      const isValidDataUrl = checkDataUrl(url, validVideoMIMEs);
+      const isValidExtension = checkExtension(url, validVideoExtensions);
+      return isValidDataUrl || isValidExtension;
+    },
+    async load(url, asset, loader) {
+      const options = {
+        ...VideoSource.defaultOptions,
+        resolution: asset.data?.resolution || getResolutionOfUrl(url),
+        alphaMode: asset.data?.alphaMode || await detectVideoAlphaMode(),
+        ...asset.data
+      };
+      const videoElement = document.createElement("video");
+      const attributeMap = {
+        preload: options.autoLoad !== false ? "auto" : void 0,
+        "webkit-playsinline": options.playsinline !== false ? "" : void 0,
+        playsinline: options.playsinline !== false ? "" : void 0,
+        muted: options.muted === true ? "" : void 0,
+        loop: options.loop === true ? "" : void 0,
+        autoplay: options.autoPlay !== false ? "" : void 0
+      };
+      Object.keys(attributeMap).forEach((key) => {
+        const value = attributeMap[key];
+        if (value !== void 0)
+          videoElement.setAttribute(key, value);
+      });
+      if (options.muted === true) {
+        videoElement.muted = true;
+      }
+      crossOrigin(videoElement, url, options.crossorigin);
+      const sourceElement = document.createElement("source");
+      let mime;
+      if (url.startsWith("data:")) {
+        mime = url.slice(5, url.indexOf(";"));
+      } else if (!url.startsWith("blob:")) {
+        const ext = url.split("?")[0].slice(url.lastIndexOf(".") + 1).toLowerCase();
+        mime = VideoSource.MIME_TYPES[ext] || `video/${ext}`;
+      }
+      sourceElement.src = url;
+      if (mime) {
+        sourceElement.type = mime;
+      }
+      return new Promise((resolve) => {
+        const onCanPlay = async () => {
+          const base = new VideoSource({ ...options, resource: videoElement });
+          videoElement.removeEventListener("canplay", onCanPlay);
+          if (asset.data.preload) {
+            await preloadVideo(videoElement);
+          }
+          resolve(createTexture(base, loader, url));
+        };
+        videoElement.addEventListener("canplay", onCanPlay);
+        videoElement.appendChild(sourceElement);
+      });
+    },
+    unload(texture) {
+      texture.destroy(true);
+    }
+  };
+
+  // node_modules/pixi.js/lib/assets/resolver/parsers/resolveJsonUrl.mjs
+  init_Extensions();
+  init_Resolver();
+
+  // node_modules/pixi.js/lib/assets/resolver/parsers/resolveTextureUrl.mjs
+  init_Extensions();
+  init_Resolver();
+  var resolveTextureUrl = {
+    extension: ExtensionType.ResolveParser,
+    test: loadTextures.test,
+    parse: (value) => ({
+      resolution: parseFloat(Resolver.RETINA_PREFIX.exec(value)?.[1] ?? "1"),
+      format: value.split(".").pop(),
+      src: value
+    })
+  };
+
+  // node_modules/pixi.js/lib/assets/resolver/parsers/resolveJsonUrl.mjs
+  var resolveJsonUrl = {
+    extension: ExtensionType.ResolveParser,
+    test: (value) => Resolver.RETINA_PREFIX.test(value) && value.endsWith(".json"),
+    parse: resolveTextureUrl.parse
+  };
+
+  // node_modules/pixi.js/lib/assets/Assets.mjs
+  init_Resolver();
+  init_convertToList();
+  init_isSingleItem();
+  var AssetsClass = class {
+    constructor() {
+      this._detections = [];
+      this._initialized = false;
+      this.resolver = new Resolver();
+      this.loader = new Loader();
+      this.cache = Cache;
+      this._backgroundLoader = new BackgroundLoader(this.loader);
+      this._backgroundLoader.active = true;
+      this.reset();
+    }
+    /**
+     * Best practice is to call this function before any loading commences
+     * Initiating is the best time to add any customization to the way things are loaded.
+     *
+     * you do not need to call this for the Assets class to work, only if you want to set any initial properties
+     * @param options - options to initialize the Assets manager with
+     */
+    async init(options = {}) {
+      if (this._initialized) {
+        warn("[Assets]AssetManager already initialized, did you load before calling this Assets.init()?");
+        return;
+      }
+      this._initialized = true;
+      if (options.defaultSearchParams) {
+        this.resolver.setDefaultSearchParams(options.defaultSearchParams);
+      }
+      if (options.basePath) {
+        this.resolver.basePath = options.basePath;
+      }
+      if (options.bundleIdentifier) {
+        this.resolver.setBundleIdentifier(options.bundleIdentifier);
+      }
+      if (options.manifest) {
+        let manifest = options.manifest;
+        if (typeof manifest === "string") {
+          manifest = await this.load(manifest);
+        }
+        this.resolver.addManifest(manifest);
+      }
+      const resolutionPref = options.texturePreference?.resolution ?? 1;
+      const resolution = typeof resolutionPref === "number" ? [resolutionPref] : resolutionPref;
+      const formats = await this._detectFormats({
+        preferredFormats: options.texturePreference?.format,
+        skipDetections: options.skipDetections,
+        detections: this._detections
+      });
+      this.resolver.prefer({
+        params: {
+          format: formats,
+          resolution
+        }
+      });
+      if (options.preferences) {
+        this.setPreferences(options.preferences);
+      }
+    }
+    /**
+     * Allows you to specify how to resolve any assets load requests.
+     * There are a few ways to add things here as shown below:
+     * @example
+     * import { Assets } from 'pixi.js';
+     *
+     * // Simple
+     * Assets.add({alias: 'bunnyBooBoo', src: 'bunny.png'});
+     * const bunny = await Assets.load('bunnyBooBoo');
+     *
+     * // Multiple keys:
+     * Assets.add({alias: ['burger', 'chicken'], src: 'bunny.png'});
+     *
+     * const bunny = await Assets.load('burger');
+     * const bunny2 = await Assets.load('chicken');
+     *
+     * // passing options to to the object
+     * Assets.add({
+     *     alias: 'bunnyBooBooSmooth',
+     *     src: 'bunny{png,webp}',
+     *     data: { scaleMode: SCALE_MODES.NEAREST }, // Base texture options
+     * });
+     *
+     * // Multiple assets
+     *
+     * // The following all do the same thing:
+     *
+     * Assets.add({alias: 'bunnyBooBoo', src: 'bunny{png,webp}'});
+     *
+     * Assets.add({
+     *     alias: 'bunnyBooBoo',
+     *     src: [
+     *         'bunny.png',
+     *         'bunny.webp',
+     *    ],
+     * });
+     *
+     * const bunny = await Assets.load('bunnyBooBoo'); // Will try to load WebP if available
+     * @param assets - the unresolved assets to add to the resolver
+     */
+    add(assets) {
+      this.resolver.add(assets);
+    }
+    async load(urls, onProgress) {
+      if (!this._initialized) {
+        await this.init();
+      }
+      const singleAsset = isSingleItem(urls);
+      const urlArray = convertToList(urls).map((url) => {
+        if (typeof url !== "string") {
+          const aliases = this.resolver.getAlias(url);
+          if (aliases.some((alias) => !this.resolver.hasKey(alias))) {
+            this.add(url);
+          }
+          return Array.isArray(aliases) ? aliases[0] : aliases;
+        }
+        if (!this.resolver.hasKey(url))
+          this.add({ alias: url, src: url });
+        return url;
+      });
+      const resolveResults = this.resolver.resolve(urlArray);
+      const out2 = await this._mapLoadToResolve(resolveResults, onProgress);
+      return singleAsset ? out2[urlArray[0]] : out2;
+    }
+    /**
+     * This adds a bundle of assets in one go so that you can load them as a group.
+     * For example you could add a bundle for each screen in you pixi app
+     * @example
+     * import { Assets } from 'pixi.js';
+     *
+     * Assets.addBundle('animals', [
+     *  { alias: 'bunny', src: 'bunny.png' },
+     *  { alias: 'chicken', src: 'chicken.png' },
+     *  { alias: 'thumper', src: 'thumper.png' },
+     * ]);
+     * // or
+     * Assets.addBundle('animals', {
+     *     bunny: 'bunny.png',
+     *     chicken: 'chicken.png',
+     *     thumper: 'thumper.png',
+     * });
+     *
+     * const assets = await Assets.loadBundle('animals');
+     * @param bundleId - the id of the bundle to add
+     * @param assets - a record of the asset or assets that will be chosen from when loading via the specified key
+     */
+    addBundle(bundleId, assets) {
+      this.resolver.addBundle(bundleId, assets);
+    }
+    /**
+     * Bundles are a way to load multiple assets at once.
+     * If a manifest has been provided to the init function then you can load a bundle, or bundles.
+     * you can also add bundles via `addBundle`
+     * @example
+     * import { Assets } from 'pixi.js';
+     *
+     * // Manifest Example
+     * const manifest = {
+     *     bundles: [
+     *         {
+     *             name: 'load-screen',
+     *             assets: [
+     *                 {
+     *                     alias: 'background',
+     *                     src: 'sunset.png',
+     *                 },
+     *                 {
+     *                     alias: 'bar',
+     *                     src: 'load-bar.{png,webp}',
+     *                 },
+     *             ],
+     *         },
+     *         {
+     *             name: 'game-screen',
+     *             assets: [
+     *                 {
+     *                     alias: 'character',
+     *                     src: 'robot.png',
+     *                 },
+     *                 {
+     *                     alias: 'enemy',
+     *                     src: 'bad-guy.png',
+     *                 },
+     *             ],
+     *         },
+     *     ]
+     * };
+     *
+     * await Assets.init({ manifest });
+     *
+     * // Load a bundle...
+     * loadScreenAssets = await Assets.loadBundle('load-screen');
+     * // Load another bundle...
+     * gameScreenAssets = await Assets.loadBundle('game-screen');
+     * @param bundleIds - the bundle id or ids to load
+     * @param onProgress - Optional function that is called when progress on asset loading is made.
+     * The function is passed a single parameter, `progress`, which represents the percentage (0.0 - 1.0)
+     * of the assets loaded. Do not use this function to detect when assets are complete and available,
+     * instead use the Promise returned by this function.
+     * @returns all the bundles assets or a hash of assets for each bundle specified
+     */
+    async loadBundle(bundleIds, onProgress) {
+      if (!this._initialized) {
+        await this.init();
+      }
+      let singleAsset = false;
+      if (typeof bundleIds === "string") {
+        singleAsset = true;
+        bundleIds = [bundleIds];
+      }
+      const resolveResults = this.resolver.resolveBundle(bundleIds);
+      const out2 = {};
+      const keys = Object.keys(resolveResults);
+      let count2 = 0;
+      let total = 0;
+      const _onProgress = () => {
+        onProgress?.(++count2 / total);
+      };
+      const promises = keys.map((bundleId) => {
+        const resolveResult = resolveResults[bundleId];
+        total += Object.keys(resolveResult).length;
+        return this._mapLoadToResolve(resolveResult, _onProgress).then((resolveResult2) => {
+          out2[bundleId] = resolveResult2;
+        });
+      });
+      await Promise.all(promises);
+      return singleAsset ? out2[bundleIds[0]] : out2;
+    }
+    /**
+     * Initiate a background load of some assets. It will passively begin to load these assets in the background.
+     * So when you actually come to loading them you will get a promise that resolves to the loaded assets immediately
+     *
+     * An example of this might be that you would background load game assets after your inital load.
+     * then when you got to actually load your game screen assets when a player goes to the game - the loading
+     * would already have stared or may even be complete, saving you having to show an interim load bar.
+     * @example
+     * import { Assets } from 'pixi.js';
+     *
+     * Assets.backgroundLoad('bunny.png');
+     *
+     * // later on in your app...
+     * await Assets.loadBundle('bunny.png'); // Will resolve quicker as loading may have completed!
+     * @param urls - the url / urls you want to background load
+     */
+    async backgroundLoad(urls) {
+      if (!this._initialized) {
+        await this.init();
+      }
+      if (typeof urls === "string") {
+        urls = [urls];
+      }
+      const resolveResults = this.resolver.resolve(urls);
+      this._backgroundLoader.add(Object.values(resolveResults));
+    }
+    /**
+     * Initiate a background of a bundle, works exactly like backgroundLoad but for bundles.
+     * this can only be used if the loader has been initiated with a manifest
+     * @example
+     * import { Assets } from 'pixi.js';
+     *
+     * await Assets.init({
+     *     manifest: {
+     *         bundles: [
+     *             {
+     *                 name: 'load-screen',
+     *                 assets: [...],
+     *             },
+     *             ...
+     *         ],
+     *     },
+     * });
+     *
+     * Assets.backgroundLoadBundle('load-screen');
+     *
+     * // Later on in your app...
+     * await Assets.loadBundle('load-screen'); // Will resolve quicker as loading may have completed!
+     * @param bundleIds - the bundleId / bundleIds you want to background load
+     */
+    async backgroundLoadBundle(bundleIds) {
+      if (!this._initialized) {
+        await this.init();
+      }
+      if (typeof bundleIds === "string") {
+        bundleIds = [bundleIds];
+      }
+      const resolveResults = this.resolver.resolveBundle(bundleIds);
+      Object.values(resolveResults).forEach((resolveResult) => {
+        this._backgroundLoader.add(Object.values(resolveResult));
+      });
+    }
+    /**
+     * Only intended for development purposes.
+     * This will wipe the resolver and caches.
+     * You will need to reinitialize the Asset
+     */
+    reset() {
+      this.resolver.reset();
+      this.loader.reset();
+      this.cache.reset();
+      this._initialized = false;
+    }
+    get(keys) {
+      if (typeof keys === "string") {
+        return Cache.get(keys);
+      }
+      const assets = {};
+      for (let i2 = 0; i2 < keys.length; i2++) {
+        assets[i2] = Cache.get(keys[i2]);
+      }
+      return assets;
+    }
+    /**
+     * helper function to map resolved assets back to loaded assets
+     * @param resolveResults - the resolve results from the resolver
+     * @param onProgress - the progress callback
+     */
+    async _mapLoadToResolve(resolveResults, onProgress) {
+      const resolveArray = [...new Set(Object.values(resolveResults))];
+      this._backgroundLoader.active = false;
+      const loadedAssets = await this.loader.load(resolveArray, onProgress);
+      this._backgroundLoader.active = true;
+      const out2 = {};
+      resolveArray.forEach((resolveResult) => {
+        const asset = loadedAssets[resolveResult.src];
+        const keys = [resolveResult.src];
+        if (resolveResult.alias) {
+          keys.push(...resolveResult.alias);
+        }
+        keys.forEach((key) => {
+          out2[key] = asset;
+        });
+        Cache.set(keys, asset);
+      });
+      return out2;
+    }
+    /**
+     * Unload an asset or assets. As the Assets class is responsible for creating the assets via the `load` function
+     * this will make sure to destroy any assets and release them from memory.
+     * Once unloaded, you will need to load the asset again.
+     *
+     * Use this to help manage assets if you find that you have a large app and you want to free up memory.
+     *
+     * - it's up to you as the developer to make sure that textures are not actively being used when you unload them,
+     * Pixi won't break but you will end up with missing assets. Not a good look for the user!
+     * @example
+     * import { Assets } from 'pixi.js';
+     *
+     * // Load a URL:
+     * const myImageTexture = await Assets.load('http://some.url.com/image.png'); // => returns a texture
+     *
+     * await Assets.unload('http://some.url.com/image.png')
+     *
+     * // myImageTexture will be destroyed now.
+     *
+     * // Unload multiple assets:
+     * const textures = await Assets.unload(['thumper', 'chicko']);
+     * @param urls - the urls to unload
+     */
+    async unload(urls) {
+      if (!this._initialized) {
+        await this.init();
+      }
+      const urlArray = convertToList(urls).map((url) => typeof url !== "string" ? url.src : url);
+      const resolveResults = this.resolver.resolve(urlArray);
+      await this._unloadFromResolved(resolveResults);
+    }
+    /**
+     * Bundles are a way to manage multiple assets at once.
+     * this will unload all files in a bundle.
+     *
+     * once a bundle has been unloaded, you need to load it again to have access to the assets.
+     * @example
+     * import { Assets } from 'pixi.js';
+     *
+     * Assets.addBundle({
+     *     'thumper': 'http://some.url.com/thumper.png',
+     * })
+     *
+     * const assets = await Assets.loadBundle('thumper');
+     *
+     * // Now to unload...
+     *
+     * await Assets.unloadBundle('thumper');
+     *
+     * // All assets in the assets object will now have been destroyed and purged from the cache
+     * @param bundleIds - the bundle id or ids to unload
+     */
+    async unloadBundle(bundleIds) {
+      if (!this._initialized) {
+        await this.init();
+      }
+      bundleIds = convertToList(bundleIds);
+      const resolveResults = this.resolver.resolveBundle(bundleIds);
+      const promises = Object.keys(resolveResults).map((bundleId) => this._unloadFromResolved(resolveResults[bundleId]));
+      await Promise.all(promises);
+    }
+    async _unloadFromResolved(resolveResult) {
+      const resolveArray = Object.values(resolveResult);
+      resolveArray.forEach((resolveResult2) => {
+        Cache.remove(resolveResult2.src);
+      });
+      await this.loader.unload(resolveArray);
+    }
+    /**
+     * Detects the supported formats for the browser, and returns an array of supported formats, respecting
+     * the users preferred formats order.
+     * @param options - the options to use when detecting formats
+     * @param options.preferredFormats - the preferred formats to use
+     * @param options.skipDetections - if we should skip the detections altogether
+     * @param options.detections - the detections to use
+     * @returns - the detected formats
+     */
+    async _detectFormats(options) {
+      let formats = [];
+      if (options.preferredFormats) {
+        formats = Array.isArray(options.preferredFormats) ? options.preferredFormats : [options.preferredFormats];
+      }
+      for (const detection of options.detections) {
+        if (options.skipDetections || await detection.test()) {
+          formats = await detection.add(formats);
+        } else if (!options.skipDetections) {
+          formats = await detection.remove(formats);
+        }
+      }
+      formats = formats.filter((format, index) => formats.indexOf(format) === index);
+      return formats;
+    }
+    /** All the detection parsers currently added to the Assets class. */
+    get detections() {
+      return this._detections;
+    }
+    /**
+     * General setter for preferences. This is a helper function to set preferences on all parsers.
+     * @param preferences - the preferences to set
+     */
+    setPreferences(preferences) {
+      this.loader.parsers.forEach((parser) => {
+        if (!parser.config)
+          return;
+        Object.keys(parser.config).filter((key) => key in preferences).forEach((key) => {
+          parser.config[key] = preferences[key];
+        });
+      });
+    }
+  };
+  var Assets = new AssetsClass();
+  extensions.handleByList(ExtensionType.LoadParser, Assets.loader.parsers).handleByList(ExtensionType.ResolveParser, Assets.resolver.parsers).handleByList(ExtensionType.CacheParser, Assets.cache.parsers).handleByList(ExtensionType.DetectionParser, Assets.detections);
+  extensions.add(
+    cacheTextureArray,
+    detectDefaults,
+    detectAvif,
+    detectWebp,
+    detectMp4,
+    detectOgv,
+    detectWebm,
+    loadJson,
+    loadTxt,
+    loadWebFont,
+    loadSvg,
+    loadTextures,
+    loadVideoTextures,
+    resolveTextureUrl,
+    resolveJsonUrl
+  );
+  var assetKeyMap = {
+    loader: ExtensionType.LoadParser,
+    resolver: ExtensionType.ResolveParser,
+    cache: ExtensionType.CacheParser,
+    detection: ExtensionType.DetectionParser
+  };
+  extensions.handle(ExtensionType.Asset, (extension) => {
+    const ref = extension.ref;
+    Object.entries(assetKeyMap).filter(([key]) => !!ref[key]).forEach(([key, type]) => extensions.add(Object.assign(
+      ref[key],
+      // Allow the function to optionally define it's own
+      // ExtensionMetadata, the use cases here is priority for LoaderParsers
+      { extension: ref[key].extension ?? type }
+    )));
+  }, (extension) => {
+    const ref = extension.ref;
+    Object.keys(assetKeyMap).filter((key) => !!ref[key]).forEach((key) => extensions.remove(ref[key]));
+  });
+
   // node_modules/pixi.js/lib/index.mjs
-  init_Polygon();
   init_textureFrom();
   init_Container();
   init_Graphics();
+  init_Sprite();
   init_eventemitter3();
   var import_earcut2 = __toESM(require_earcut(), 1);
   extensions.add(browserExt, webworkerExt);
 
-  // src/TourneyView/Arrows.ts
-  var Arrows_default = class {
-    arrows;
-    get = (tree_nodes) => {
-      this.arrows = this.getArrowsGeometry(tree_nodes).map((i2) => this.getArrow(i2));
-      return this.arrows;
-    };
-    updateArrows(tree_nodes) {
-      this.arrows = this.getArrowsGeometry(tree_nodes).map((i2, idx) => this.updateCoords(i2, this.arrows[idx]));
-      return this.arrows;
+  // src/controllers/AppState.ts
+  var AppState_default = class {
+    app_mode = "normal";
+    background;
+    content;
+    elements_type_bg = [];
+    elements_type_normal = [];
+    element_in_focus;
+    is_moving_element = false;
+    is_moving_content = false;
+    constructor(content, background) {
+      this.content = content;
+      this.background = background;
     }
-    getArrowsGeometry(tree_nodes) {
-      const arrows_geometry = [];
-      tree_nodes.forEach((i2) => {
-        if (i2.parent_uid) {
-          const node = tree_nodes.find((j2) => j2.uid === i2.parent_uid);
-          if (!node)
-            return;
-          const point_1 = {
-            x: i2.container.x + node.container.width,
-            y: i2.container.y + node.container.height / 2
-          };
-          const point_2 = {
-            x: node.container.x,
-            y: node.container.y + node.container.height / 2
-          };
-          arrows_geometry.push({ point_1, point_2 });
-        }
-      });
-      return arrows_geometry;
-    }
-    getArrow(geometry) {
-      const arrow = new Graphics();
-      this.setSpahe(geometry, arrow);
-      return arrow;
-    }
-    updateCoords(geometry, arrow) {
-      arrow.clear();
-      this.setSpahe(geometry, arrow);
-      return arrow;
-    }
-    setSpahe(geometry, arrow) {
-      const r2 = 30;
-      const point_1 = geometry.point_1;
-      const point_2 = geometry.point_2;
-      const x1 = point_1.x;
-      const y1 = point_1.y;
-      const x2 = (point_1.x + point_2.x) / 2 - r2;
-      const y2 = point_1.y;
-      const x3 = (point_1.x + point_2.x) / 2;
-      const y3 = point_1.y;
-      const x4 = (point_1.x + point_2.x) / 2;
-      const y4 = point_1.y + (point_2.y > point_1.y ? +r2 : -r2);
-      const x5 = (point_1.x + point_2.x) / 2;
-      const y5 = point_2.y + (point_2.y > point_1.y ? -r2 : +r2);
-      const x6 = (point_1.x + point_2.x) / 2;
-      const y6 = point_2.y;
-      const x7 = (point_1.x + point_2.x) / 2 + r2;
-      const y7 = point_2.y;
-      const x8 = point_2.x;
-      const y8 = point_2.y;
-      arrow.moveTo(x1, y1).lineTo(x2, y2).quadraticCurveTo(x3, y3, x4, y4).lineTo(x5, y5).quadraticCurveTo(x6, y6, x7, y7).lineTo(x8, y8);
-      arrow.stroke({ width: 2, color: 0 });
+    addElement(component, type) {
+      if (type === "bg")
+        return this.elements_type_bg.push(component);
+      this.elements_type_normal.push(component);
     }
   };
 
-  // src/TourneyView/Tree.ts
-  var Tree_default = class {
-    tree_nodes = [];
-    column_structure = [];
-    container = new Container();
-    arrows = new Arrows_default();
-    container_properties = {
-      width: 120,
-      height: 165,
-      gap_x: 100,
-      gap_y: 50,
-      stroke_color: "black",
-      stroke_width: 1
-    };
-    cursor = {
-      x: 0,
-      y: 0
-    };
-    constructor(container_properties) {
-      if (container_properties) {
-        typeof container_properties.width !== "undefined" && (this.container_properties.width = container_properties.width);
-        typeof container_properties.height !== "undefined" && (this.container_properties.height = container_properties.height);
-        typeof container_properties.gap_x !== "undefined" && (this.container_properties.gap_x = container_properties.gap_x);
-        typeof container_properties.gap_y !== "undefined" && (this.container_properties.gap_y = container_properties.gap_y);
-        typeof container_properties.stroke_color !== "undefined" && (this.container_properties.stroke_color = container_properties?.stroke_color);
-        typeof container_properties.stroke_width !== "undefined" && (this.container_properties.stroke_width = container_properties?.stroke_width);
+  // src/configuration/configuration.json
+  var configuration_default = {
+    border_focus: {
+      color: "blue",
+      width: 5
+    },
+    border_hover: {
+      color: "gray",
+      width: 5
+    },
+    border_select: {
+      color: "red",
+      width: 5
+    },
+    backgrounds: [
+      {
+        color: "#EEEEEE"
+      },
+      {
+        color: "#E0C7C7"
+      },
+      {
+        color: "#C7CAB2"
+      },
+      {
+        color: "#ACC7C9"
       }
-    }
-    get(tree_nodes) {
-      this.tree_nodes = tree_nodes.map((i2) => ({ ...i2, container: new Container() }));
-      for (let i2 = 0; i2 < this.tree_nodes.length; i2++) {
-        const node = this.tree_nodes[i2];
-        if (!this.isBaseNode(node.uid) || !!node.container.children.length)
-          continue;
-        this.setCursorStart();
-        this.setTreeNodes(this.tree_nodes[i2].uid, 0);
+    ],
+    rect: {
+      fill: "#00C62B3D",
+      border: {
+        color: "black",
+        width: 4
       }
-      const tree_nodes_container = this.tree_nodes.map((i2) => i2.container);
-      const arrows_containers = this.arrows.get(this.tree_nodes);
-      this.container.addChild(...tree_nodes_container, ...arrows_containers);
-      return { container: this.container, tree_nodes: this.tree_nodes };
-    }
-    /**
-     * BaseNode - самая глубоковложенная node (которая не имеет родителей; является листом)
-     * @param node_uid - проверяемая node
-     */
-    isBaseNode(node_uid) {
-      return !this.tree_nodes.find((i2) => i2.parent_uid === node_uid);
-    }
-    /**
-     * По указанной node строит дерево в следующем порядке:
-     * 1. Построй указанную node по её uid
-     * 2. Построй второго ребенка и всех детей этого ребенка
-     * 3. Найди uid родителя и выполни с ним шаги 1-3
-     * @param node_uid node uid, с которой проиходят шаги 1-3
-     * @param nesting уровень вложенности текущей node
-     */
-    setTreeNodes(node_uid, nesting) {
-      const node = this.tree_nodes.find((i2) => i2.uid === node_uid);
-      if (!node)
-        return;
-      this.setTreeNodeContainerProperties(node);
-      this.pushNodeToElemStructure(node, nesting);
-      this.setCursorBackDown(nesting - 1);
-      this.setChildTree(node, nesting - 1);
-      if (node.parent_uid) {
-        this.cursor.x = node.container.x;
-        this.cursor.y = node.container.y;
-        this.setCursorNext(nesting + 1);
-        this.setTreeNodes(node.parent_uid, nesting + 1);
-      }
-    }
-    /**
-     * По указанной node выполняет следующие шаги:
-     * 1. Найди единственный child node (т.к. один из них уже был отрисован)
-     * 2. Если child node существует, то отрисуй его и всех его детей
-     * @param parent_node - родительская node
-     * @param nesting - уровень вложенности child node (которую собираемся отрисовать)
-     */
-    setChildTree(parent_node, nesting) {
-      const child_node = this.tree_nodes.filter((i2) => i2.parent_uid === parent_node.uid && !i2.container.children.length)[0];
-      if (!child_node)
-        return;
-      this.setTreeNodeContainerProperties(child_node);
-      this.pushNodeToElemStructure(child_node, nesting);
-      this.setChildTrees(child_node, nesting);
-    }
-    /**
-     * По указанной node выполняет следующие шаги:
-     * 1. Найди все child nodes
-     * 2. Отрисуй все child nodes и их детей (вызывает сама себя на этом шаге)
-     * @param parent_node - родительская node
-     * @param nesting - уровень вложенности child node (которую собираемся отрисовать)
-     */
-    setChildTrees(parent_node, nesting) {
-      const childtree_nodes = this.tree_nodes.filter((i2) => i2.parent_uid === parent_node.uid);
-      if (!childtree_nodes.length)
-        return [];
-      const saved_cursor_x = this.cursor.x;
-      const saved_cursor_y = this.cursor.y;
-      this.setCursorBackUp(nesting - 1);
-      this.setTreeNodeContainerProperties(childtree_nodes[0]);
-      this.pushNodeToElemStructure(childtree_nodes[0], nesting - 1);
-      this.setChildTrees(childtree_nodes[0], nesting - 1);
-      if (childtree_nodes[1]) {
-        this.cursor.x = saved_cursor_x;
-        this.cursor.y = saved_cursor_y;
-        this.setCursorBackDown(nesting - 1);
-        this.setTreeNodeContainerProperties(childtree_nodes[1]);
-        this.pushNodeToElemStructure(childtree_nodes[1], nesting - 1);
-        this.setChildTrees(childtree_nodes[1], nesting - 1);
-      }
-    }
-    /**
-     * Устанавливает координаты и обводку контейнера
-     */
-    setTreeNodeContainerProperties(node) {
-      node.container.x = this.cursor.x;
-      node.container.y = this.cursor.y;
-      const rect = new Graphics().rect(0, 0, this.container_properties.width, this.container_properties.height).stroke({ color: this.container_properties.stroke_color, width: this.container_properties.stroke_width });
-      node.container.addChild(rect);
-    }
-    setCursorStart() {
-      const base_node_containers = this.tree_nodes.filter((i2) => !!i2.container.children.length && this.isBaseNode(i2.uid));
-      const max_y = Math.max(...base_node_containers.map((i2) => i2.container.y));
-      if (max_y === -Infinity)
-        return;
-      this.cursor.x = 0;
-      this.cursor.y = max_y + this.container_properties.height + this.container_properties.gap_y;
-    }
-    getDYFromNesting(nesting) {
-      const sup = 2 ** nesting;
-      const sup_2 = 2 ** (nesting - 1);
-      const y_1 = (this.container_properties.height * sup + this.container_properties.gap_y * (sup - 1)) / 2;
-      const y_2 = (this.container_properties.height * sup_2 + this.container_properties.gap_y * (sup_2 - 1)) / 2;
-      return y_1 - y_2;
-    }
-    setCursorNext(nesting) {
-      this.cursor.x += this.container_properties.width + this.container_properties.gap_x;
-      this.cursor.y += this.getDYFromNesting(nesting);
-    }
-    setCursorBackDown(nesting) {
-      this.cursor.x -= this.container_properties.width + this.container_properties.gap_x;
-      this.cursor.y += this.getDYFromNesting(nesting + 1);
-    }
-    setCursorBackUp(nesting) {
-      this.cursor.x -= this.container_properties.width + this.container_properties.gap_x;
-      this.cursor.y -= this.getDYFromNesting(nesting + 1);
-    }
-    pushNodeToElemStructure(node, nesting) {
-      this.column_structure[nesting] ? this.column_structure[nesting].push(node) : this.column_structure[nesting] = [node];
     }
   };
 
-  // src/TourneyView/AdaptiveTree.ts
-  var AdaptiveTree_default = class extends Tree_default {
-    tree_nodes = [];
-    column_structure = [];
-    interactive_container = new Container();
-    view = {
-      container: new Container(),
-      x: 0,
-      y: 0,
-      speed_grabbing: 3
-    };
-    tree = {
-      container: this.container,
-      x: 0,
-      y: 0
-    };
-    grabbing_area = {
-      x_min: 0,
-      x_max: 0,
-      y_min: 0,
-      y_max: 0
-    };
-    current_column = 0;
-    axis_y;
-    point_cursor = null;
-    saved_offset = null;
-    constructor() {
+  // src/configuration/Configuration.ts
+  var Configuration = class {
+    static _config = configuration_default;
+    static get config() {
+      return this._config;
+    }
+  };
+
+  // src/components/Elements/Element/InteractiveBorders/InteractiveBorderSide.ts
+  var InteractiveBorderSide_default = class extends Graphics {
+    app;
+    target;
+    handleMoveBorderBind;
+    handleMouseEnterBind = this.handleMouseEnter.bind(this);
+    handleMouseLeaveBind = this.handleMouseLeave.bind(this);
+    handleMouseMoveBind = this.handleMouseMove.bind(this);
+    handleMouseDownBind = this.handleMouseDown.bind(this);
+    handleMouseUpBind = this.handleMouseUp.bind(this);
+    pointer_coords_saved;
+    constructor(app, target, options) {
       super();
+      this.app = app;
+      this.target = target;
+      this.setBorderPath();
+      this.stroke({ width: 7, alpha: 0 });
+      options?.handleMoveBorder && this.setHandlersMoveBorder(options.handleMoveBorder);
     }
-    get(tree_nodes) {
-      const tree = super.get(tree_nodes);
-      this.view.container.addChild(tree.container);
-      this.interactive_container.addChild(this.view.container);
-      tree.container = this.interactive_container;
-      this.column_structure = this.column_structure.map((i2) => i2.map((j2) => ({ ...j2, point: { x: j2.container.x, y: j2.container.y } })));
-      this.axis_y = (Math.max(...this.tree_nodes.map((i2) => i2.container.y)) + this.container_properties.height) / 2;
-      this.setEventsListeners();
-      this.setGrabbingArea();
-      this.view.y = -(this.container.height - window.innerHeight) / 2;
-      this.view.container.y = this.view.y;
-      return tree;
+    setBorderPath() {
     }
-    update() {
-      this.column_structure.forEach((i2) => {
-        i2.forEach((j2) => {
-          j2.container.y = Math.abs(j2.container.y - j2.point.y) < 0.1 ? j2.point.y : j2.container.y - (j2.container.y - j2.point.y) / 10;
-        });
+    setHandlersMoveBorder(cb) {
+      this.handleMoveBorderBind = cb.bind(this);
+      this.eventMode = "static";
+      this.addEventListener("mouseenter", this.handleMouseEnterBind);
+      this.addEventListener("mouseleave", this.handleMouseLeaveBind);
+    }
+    handleMouseEnter() {
+      if (this.pointer_coords_saved)
+        return;
+      this.addEventListener("mousedown", this.handleMouseDownBind);
+    }
+    handleMouseLeave() {
+      this.removeEventListener("mousedown", this.handleMouseDownBind);
+    }
+    handleMouseMove(event) {
+      const dx = (event.globalX - this.pointer_coords_saved.x) * (1 / this.app.stage.children[0].scale.x);
+      const dy = (event.globalY - this.pointer_coords_saved.y) * (1 / this.app.stage.children[0].scale.x);
+      this.pointer_coords_saved.x = event.globalX;
+      this.pointer_coords_saved.y = event.globalY;
+      this.handleMoveBorderBind({ dx, dy });
+    }
+    handleMouseDown(event) {
+      event.stopPropagation();
+      this.app.stage.cursor = this.cursor;
+      this.app.stage.interactiveChildren = false;
+      this.pointer_coords_saved = { x: event.globalX, y: event.globalY };
+      this.app.stage.addEventListener("mousemove", this.handleMouseMoveBind);
+      this.app.stage.addEventListener("mouseup", this.handleMouseUpBind);
+    }
+    handleMouseUp(event) {
+      event.stopPropagation();
+      this.app.stage.cursor = "auto";
+      this.app.stage.interactiveChildren = true;
+      this.pointer_coords_saved = null;
+      this.app.stage.removeEventListener("mousemove", this.handleMouseMoveBind);
+      this.app.stage.removeEventListener("mouseup", this.handleMouseUpBind);
+    }
+  };
+
+  // src/components/Elements/Element/InteractiveBorders/InteractiveHorizontalBorder.ts
+  var InteractiveHorizontalBorder_default = class extends InteractiveBorderSide_default {
+    constructor(app, target, options) {
+      super(app, target, {
+        handleMoveBorder: ({ dy }) => {
+          options?.handleMoveHorizontalBorder?.(dy);
+        }
       });
-      this.view.container.x = Math.abs(this.view.container.x - this.view.x) < 0.1 ? this.view.x : this.view.container.x - (this.view.container.x - this.view.x) / 10;
-      this.view.container.y = Math.abs(this.view.container.y - this.view.y) < 0.1 ? this.view.y : this.view.container.y - (this.view.container.y - this.view.y) / 10;
-      this.arrows.updateArrows(this.tree_nodes);
     }
-    setEventsListeners() {
-      const x_1 = 0;
-      const y_1 = 0;
-      const x_2 = window.innerWidth;
-      const y_2 = 0;
-      const x_3 = window.innerWidth;
-      const y_3 = window.innerHeight;
-      const x_4 = 0;
-      const y_4 = window.innerHeight;
-      this.interactive_container.hitArea = new Polygon(x_1, y_1, x_2, y_2, x_3, y_3, x_4, y_4);
-      this.interactive_container.eventMode = "static";
-      this.interactive_container.interactiveChildren = false;
-      this.interactive_container.cursor = "grab";
-      this.interactive_container.addEventListener("pointerdown", this.handlePointerDown.bind(this));
-      this.interactive_container.addEventListener("pointerup", this.handlePointerUp.bind(this));
-      this.interactive_container.addEventListener("pointermove", this.handlePointerMove.bind(this));
-      this.interactive_container.addEventListener("pointerout", this.handlePointerUp.bind(this));
+    setHandlersMoveBorder(cb) {
+      super.setHandlersMoveBorder(cb);
+      this.cursor = "ns-resize";
     }
-    handlePointerDown(event) {
-      this.interactive_container.cursor = "grabbing";
-      this.point_cursor = { x: event.global.x, y: event.global.y };
-      this.saved_offset = {
-        x: this.view.container.x / this.view.speed_grabbing,
-        y: this.view.container.y / this.view.speed_grabbing
+  };
+
+  // src/components/Elements/Element/InteractiveBorders/InteractiveBorderBottom.ts
+  var InteractiveBorderBottom_default = class extends InteractiveHorizontalBorder_default {
+    setBorderPath() {
+      this.moveTo(this.target.x, this.target.height).lineTo(this.target.width, this.target.height);
+    }
+  };
+
+  // src/components/Elements/Element/InteractiveBorders/InteractiveVerticalBorder.ts
+  var InteractiveVerticalBorder_default = class extends InteractiveBorderSide_default {
+    constructor(app, target, options) {
+      super(app, target, {
+        handleMoveBorder: ({ dx }) => {
+          options?.handleMoveVerticalBorder?.(dx);
+        }
+      });
+    }
+    setHandlersMoveBorder(cb) {
+      super.setHandlersMoveBorder(cb);
+      this.cursor = "ew-resize";
+    }
+  };
+
+  // src/components/Elements/Element/InteractiveBorders/InteractiveBorderRight.ts
+  var InteractiveBorderRight_default = class extends InteractiveVerticalBorder_default {
+    setBorderPath() {
+      this.moveTo(this.target.width, 0).lineTo(this.target.width, this.target.height);
+    }
+  };
+
+  // src/components/Elements/Element/InteractiveBorders/InteractiveBorders.ts
+  var InteractiveBorders_default = class extends Container {
+    border_top;
+    border_left;
+    border_right;
+    border_bottom;
+    corner_top_left;
+    corner_top_right;
+    corner_bottom_left;
+    corner_bottom_right;
+    app;
+    target;
+    constructor(app, target, options) {
+      super();
+      this.app = app;
+      this.target = target;
+      options?.handleMoveBorderBottom && this.setBorderBottom(options);
+      options?.handleMoveBorderRight && this.handleMoveBorderRight(options);
+    }
+    handleResize(dx, dy, x_scale, y_scale) {
+      if (this.border_bottom) {
+        this.border_bottom.y += dy;
+        this.border_bottom.width = this.border_bottom.width * x_scale;
+      }
+      if (this.border_right) {
+        this.border_right.x += dx;
+        this.border_right.height = this.border_right.height * y_scale;
+      }
+    }
+    setBorderBottom(options) {
+      this.border_bottom = new InteractiveBorderBottom_default(this.app, this.target, { handleMoveHorizontalBorder: options.handleMoveBorderBottom });
+      this.addChild(this.border_bottom);
+    }
+    handleMoveBorderRight(options) {
+      this.border_right = new InteractiveBorderRight_default(this.app, this.target, { handleMoveVerticalBorder: options.handleMoveBorderRight });
+      this.addChild(this.border_right);
+    }
+  };
+
+  // src/components/Elements/Element/index.ts
+  var Element_default = class extends Container {
+    app;
+    is_hover;
+    is_focus;
+    is_select;
+    tip_borders = new Graphics();
+    options_border_focus = Configuration.config.border_focus;
+    options_border_hover = Configuration.config.border_hover;
+    options_border_select = Configuration.config.border_select;
+    interactive_borders;
+    event_pointer_down;
+    handlePointerEnterBind = this.handlePointerEnter.bind(this);
+    handlePointerLeaveBind = this.handlePointerLeave.bind(this);
+    z_index = 0;
+    component = new Container();
+    handleMoveBorderBottom;
+    handleMoveBorderRight;
+    constructor(app, point) {
+      super();
+      this.app = app;
+      this.x = point.x;
+      this.y = point.y;
+      this.addChild(this.component);
+      this.addChild(this.tip_borders);
+      this.eventMode = "static";
+      this.addEventListener("pointerenter", this.handlePointerEnterBind);
+      this.addEventListener("pointerleave", this.handlePointerLeaveBind);
+    }
+    setFocus() {
+      this.is_focus = true;
+      this.is_hover = false;
+      this.zIndex = 50;
+      this.resetTipBorders();
+      this.setInteractiveBorders();
+    }
+    dropFocus() {
+      if (!this.is_focus)
+        return;
+      this.is_focus = false;
+      this.zIndex = this.z_index;
+      this.resetTipBorders();
+      this.interactive_borders.destroy();
+    }
+    handleResize(d_scale) {
+      if (this.is_focus || this.is_hover || this.is_select) {
+        this.resetTipBorders();
+      }
+    }
+    resetTipBorders() {
+      this.tip_borders.clear();
+      let options_borders = null;
+      if (this.is_focus) {
+        options_borders = this.options_border_focus;
+      } else if (this.is_select) {
+        options_borders = this.options_border_select;
+      } else if (this.is_hover) {
+        options_borders = this.options_border_hover;
+      }
+      options_borders && this.tip_borders.rect(this.children[0].x, this.children[0].y, this.children[0].width, this.children[0].height).stroke({ ...options_borders, width: options_borders.width / this.app.stage.children[0].scale.x });
+    }
+    setInteractiveBorders() {
+      this.interactive_borders = new InteractiveBorders_default(this.app, this.children[0], {
+        handleMoveBorderBottom: this.handleMoveBorderBottom,
+        handleMoveBorderRight: this.handleMoveBorderRight
+      });
+      this.addChild(this.interactive_borders);
+    }
+    handlePointerEnter() {
+      if (this.is_focus)
+        return;
+      this.is_hover = true;
+      this.resetTipBorders();
+    }
+    handlePointerLeave() {
+      if (this.is_focus)
+        return;
+      this.is_hover = false;
+      this.tip_borders.clear();
+    }
+    handleResizeContent(dx, dy, x_scale, y_scale) {
+      this.interactive_borders.handleResize(dx, dy, x_scale, y_scale);
+      this.resetTipBorders();
+    }
+  };
+
+  // src/utils/getElementByNode.ts
+  function getElementByNode(node) {
+    if (node instanceof Element_default)
+      return node;
+    if (node.parent)
+      return getElementByNode(node.parent);
+    return null;
+  }
+
+  // src/controllers/AppController.ts
+  var AppController_default = class {
+    app;
+    app_state;
+    d_scale = 0.5;
+    coords_saved = null;
+    element_saved = null;
+    handleMouseUpBind = this.handleMouseUp.bind(this);
+    handleMouseDownBind = this.handleMouseDown.bind(this);
+    handleMouseMoveBind = this.handleMouseMove.bind(this);
+    handleRightUpBind = this.handleRightUp.bind(this);
+    handleRightDownBind = this.handleRightDown.bind(this);
+    constructor(app, app_state) {
+      this.app = app;
+      this.app_state = app_state;
+      this.app.stage.hitArea = this.app.screen;
+      this.app.stage.eventMode = "static";
+      this.app.canvas.oncontextmenu = () => false;
+      this.app.stage.addEventListener("mouseup", this.handleMouseUpBind);
+      this.app.stage.addEventListener("mousedown", this.handleMouseDownBind);
+      this.app.stage.addEventListener("mousemove", this.handleMouseMoveBind);
+      this.app.stage.addEventListener("rightup", this.handleRightUpBind);
+      this.app.stage.addEventListener("rightdown", this.handleRightDownBind);
+    }
+    handleRightUp() {
+      this.coords_saved = null;
+      this.app_state.is_moving_content = false;
+    }
+    handleRightDown(event) {
+      this.coords_saved = {
+        x: event.screenX,
+        y: event.screenY
       };
+      this.app_state.is_moving_content = true;
     }
-    handlePointerUp() {
-      this.interactive_container.cursor = "grab";
-      this.point_cursor = null;
-    }
-    handlePointerMove(event) {
-      if (!this.point_cursor || !this.saved_offset)
-        return;
-      let x2 = (this.saved_offset.x + event.global.x - this.point_cursor.x) * this.view.speed_grabbing;
-      let y2 = (this.saved_offset.y + event.global.y - this.point_cursor.y) * this.view.speed_grabbing;
-      if (x2 > -this.grabbing_area.x_min || this.grabbing_area.x_max - this.grabbing_area.x_min < window.innerWidth)
-        x2 = -this.grabbing_area.x_min;
-      if (x2 < -this.grabbing_area.x_max + window.innerWidth && this.grabbing_area.x_max - this.grabbing_area.x_min > window.innerWidth)
-        x2 = -this.grabbing_area.x_max + window.innerWidth;
-      if (y2 > -this.grabbing_area.y_min || this.grabbing_area.y_max - this.grabbing_area.y_min < window.innerHeight)
-        y2 = -this.grabbing_area.y_min;
-      if (y2 < -this.grabbing_area.y_max + window.innerHeight && this.grabbing_area.y_max - this.grabbing_area.y_min > window.innerHeight)
-        y2 = -this.grabbing_area.y_max + window.innerHeight;
-      if (window.innerHeight > this.grabbing_area.y_max - this.grabbing_area.y_min)
-        y2 = this.view.container.y;
-      window.innerWidth > 740 && (this.view.x = x2);
-      this.view.y = y2;
-      if (window.innerWidth <= 740) {
-        this.point_cursor.x - event.global.x >= 100 && (this.setNextColumn() || (this.point_cursor = null));
-        this.point_cursor && this.point_cursor.x - event.global.x <= -100 && (this.setPrevColumn() || (this.point_cursor = null));
+    handleMouseUp() {
+      this.coords_saved = null;
+      if (!this.app_state.is_moving_element && this.element_saved) {
+        this.element_saved.setFocus();
+        this.app_state.element_in_focus = this.element_saved;
+        this.element_saved = null;
         return;
       }
+      this.app_state.is_moving_element = false;
+      this.element_saved = null;
     }
-    setGrabbingArea() {
-      this.grabbing_area.x_min = (this.container_properties.width + this.container_properties.gap_x) * this.current_column;
-      this.grabbing_area.x_max = (this.container_properties.width + this.container_properties.gap_x) * this.column_structure.length - this.container_properties.gap_x;
-      this.grabbing_area.y_min = Math.min(...this.column_structure[this.current_column].map((i2) => i2.point.y));
-      this.grabbing_area.y_max = Math.max(...this.column_structure[this.current_column].map((i2) => i2.point.y)) + this.container_properties.height;
-    }
-    setNextColumn() {
-      if (this.current_column > this.column_structure.length - 3)
-        return;
-      this.current_column += 1;
-      this.setBaseColumn(this.current_column);
-      const containers = this.column_structure[this.current_column].map((i2) => ({ y: i2.container.getGlobalPosition().y, next_y: i2.point.y, uid: i2.uid, parent_uid: i2.parent_uid }));
-      const y_1 = Math.min(...containers.map((i2) => i2.next_y));
-      const y_2 = Math.max(...containers.map((i2) => i2.next_y)) + this.container_properties.height;
-      if (y_2 - y_1 <= window.innerHeight) {
-        this.view.y = -this.axis_y + window.innerHeight / 2;
+    handleMouseDown(event) {
+      this.coords_saved = {
+        x: event.screenX,
+        y: event.screenY
+      };
+      if (event.target === this.app.stage) {
+        this.app_state.element_in_focus?.dropFocus();
+        this.app_state.element_in_focus = null;
         return;
       }
-      const container_in_view_uid = containers.sort((a2, b2) => Math.abs(a2.y) > Math.abs(b2.y) ? 1 : -1).filter((i2) => i2.y > 0)[0].parent_uid;
-      const parent_container_uid = this.column_structure[this.current_column + 1].find((i2) => i2.uid === container_in_view_uid).uid;
-      const containers_in_view = this.column_structure[this.current_column].filter((i2) => i2.parent_uid === parent_container_uid);
-      const y2 = Math.min(...containers_in_view.map((i2) => i2.point.y));
-      this.view.y = -y2 < -this.grabbing_area.y_max + window.innerHeight && this.grabbing_area.y_max - this.grabbing_area.y_min > window.innerHeight ? -this.grabbing_area.y_max + window.innerHeight : -y2;
-    }
-    setPrevColumn() {
-      if (this.current_column === 0)
-        return;
-      this.current_column -= 1;
-      this.setBaseColumn(this.current_column);
-    }
-    setBaseColumn(column) {
-      this.setPointToNodesComponent(column, 0);
-      this.arrows.updateArrows(this.tree_nodes);
-      this.setGrabbingArea();
-      this.view.x = -this.grabbing_area.x_min;
-    }
-    setPointToNodesComponent(column, nesting) {
-      let length = this.column_structure[column + nesting].length;
-      if (nesting === 0) {
-        for (let i2 = length / 2; i2 > 0; i2--) {
-          const y_1 = this.axis_y - this.container_properties.gap_y / 2 - this.container_properties.height - (this.container_properties.height + this.container_properties.gap_y) * (length / 2 - i2);
-          const y_2 = this.axis_y - this.container_properties.gap_y / 2 - this.container_properties.height - (this.container_properties.height + this.container_properties.gap_y) * (length / 2 - (length - i2 + 1));
-          this.column_structure[column + nesting][i2 - 1].point = {
-            x: this.column_structure[column + nesting][i2 - 1].container.x - this.container_properties.width + this.container_properties.gap_x,
-            y: y_1
-          };
-          this.column_structure[column + nesting][length - i2].point = {
-            x: this.column_structure[column + nesting][i2 - 1].container.x - this.container_properties.width + this.container_properties.gap_x,
-            y: y_2
-          };
+      const element = getElementByNode(event.target);
+      if (element) {
+        if (element !== this.app_state.element_in_focus) {
+          this.app_state.element_in_focus?.dropFocus();
+          this.app_state.element_in_focus = null;
         }
-      } else {
-        for (let i2 = 0; i2 < length; i2++) {
-          const y2 = this.column_structure[column + nesting - 1][Math.round(i2 * 2)].point.y + this.getDYFromNesting(nesting);
-          this.column_structure[column + nesting][i2].point = {
-            x: this.column_structure[column + nesting][i2].container.x - (this.container_properties.width + this.container_properties.gap_x),
-            y: y2
-          };
+        this.element_saved = element;
+        return;
+      }
+    }
+    handleMouseMove(event) {
+      if (this.coords_saved) {
+        const dx = event.clientX - this.coords_saved.x;
+        const dy = event.clientY - this.coords_saved.y;
+        this.coords_saved.x = event.clientX;
+        this.coords_saved.y = event.clientY;
+        if (this.app_state.is_moving_content) {
+          this.app_state.content.x += dx;
+          this.app_state.content.y += dy;
+          this.app_state.background.updateSizes(this.app_state.content.x, this.app_state.content.y);
+        }
+        if (this.element_saved) {
+          this.element_saved.x += dx;
+          this.element_saved.y += dy;
+          this.app_state.is_moving_element = true;
         }
       }
-      this.column_structure.length - 1 - (column + nesting) !== 0 && this.setPointToNodesComponent(column, nesting + 1);
     }
   };
 
-  // src/TourneyView/GamesTree.ts
-  var GamesTree_default = class {
-    game_container_properties = {
-      width: 120,
-      height: 165,
-      gap_x: 100,
-      gap_y: 50,
-      font_size_nickname: 16,
-      gap_command: 5,
-      stroke_color: "black",
-      stroke_width: 1
+  // src/components/Elements/ElementRect.ts
+  var ElementRect_default = class extends Element_default {
+    graphics;
+    constructor(app, data2) {
+      super(app, data2);
+      this.zIndex = this.z_index = 5;
+      this.graphics = new Graphics().rect(0, 0, data2.width, data2.height);
+      data2.fill && this.graphics.fill(data2.fill);
+      this.component.addChild(this.graphics);
+    }
+    handleMoveBorderBottom = (dy) => {
+      const dx = 0;
+      const scale_x = 1;
+      const scale_y = (this.graphics.height + dy) / this.graphics.height;
+      this.graphics.height += dy;
+      this.handleResizeContent(dx, dy, scale_x, scale_y);
     };
-    container = new Container();
-    adaptive_tree = new AdaptiveTree_default();
-    tourney_view;
-    init(tourney_view2) {
-      this.tourney_view = tourney_view2;
-      this.container.addChild(this.getGamesTree());
-      return this.container;
-    }
-    update() {
-      this.adaptive_tree.update();
-    }
-    getGamesTree() {
-      const tree_data = this.adaptive_tree.get(this.tourney_view.games.map((i2) => ({ parent_uid: i2.next_game_uid, uid: i2.uid })));
-      tree_data.tree_nodes.forEach((i2) => this.setCommands(i2));
-      return tree_data.container;
-    }
-    goNextColumn() {
-      this.adaptive_tree.setNextColumn();
-    }
-    goPerevColumn() {
-      this.adaptive_tree.setPrevColumn();
-    }
-    setCommands(game_component) {
-      const game = this.tourney_view.games.find((i2) => game_component.uid === i2.uid);
-      const command_container_1 = this.getCommandContainer(game.commands_uid[0]);
-      const command_container_2 = this.getCommandContainer(game.commands_uid[1]);
-      command_container_2.y = this.game_container_properties.height / 2 + this.game_container_properties.gap_command;
-      game_component.container.addChild(command_container_1, command_container_2);
-    }
-    getCommandContainer(command_uid) {
-      const command = this.tourney_view.commands.find((i2) => i2.uid === command_uid);
-      const player_container_1 = this.getPlayerContainer(command.players_uid[0]);
-      const player_container_2 = this.getPlayerContainer(command.players_uid[1]);
-      player_container_2.y = (this.game_container_properties.height / 2 - this.game_container_properties.gap_command) / 2;
-      const container = new Container();
-      container.addChild(player_container_1, player_container_2);
-      return container;
-    }
-    getPlayerContainer(player_uid) {
-      const player = this.tourney_view.players.find((i2) => i2.uid === player_uid);
-      const container = new Container();
-      const rect = new Graphics().rect(0, 0, this.game_container_properties.width, (this.game_container_properties.height / 2 - this.game_container_properties.gap_command) / 2).stroke({ color: this.game_container_properties.stroke_color, width: this.game_container_properties.stroke_width });
-      const text = new Text({ text: player.nickname, style: { fontSize: this.game_container_properties.font_size_nickname } });
-      text.y = ((this.game_container_properties.height / 2 - this.game_container_properties.gap_command) / 2 - text.height) / 2;
-      container.addChild(rect, text);
-      return container;
-    }
+    handleMoveBorderRight = (dx) => {
+      const dy = 0;
+      const scale_x = (this.graphics.width + dx) / this.graphics.width;
+      const scale_y = 1;
+      this.graphics.width += dx;
+      this.handleResizeContent(dx, dy, scale_x, scale_y);
+    };
   };
 
-  // src/TourneyView/index.ts
-  var TourneyView_default = class {
-    app = new Application();
-    games_tree = new GamesTree_default();
-    is_init = false;
-    async draw(tourney_view2) {
-      await this.initApp();
-      this.games_tree.init(tourney_view2);
-      this.app.stage.addChild(this.games_tree.container);
-      this.setEventListeners();
-      this.app.ticker.add(() => {
-        this.games_tree.update();
-      });
+  // src/components/Elements/ElementImage.ts
+  var ElementImage_default = class extends Element_default {
+    sprite;
+    constructor(app, data2) {
+      super(app, data2);
+      this.zIndex = this.z_index = 2;
+      this.sprite = Sprite.from(data2.texture);
+      if (data2.height) {
+        this.sprite.height = data2.height;
+        this.sprite.width = data2.texture.width * this.sprite.height / data2.texture.height;
+      } else if (data2.width) {
+        this.sprite.width = data2.width;
+        this.sprite.height = data2.texture.height * this.sprite.width / data2.texture.width;
+      }
+      this.component.addChild(this.sprite);
     }
-    async initApp() {
-      if (!this.is_init) {
-        await this.app.init({ resizeTo: window, backgroundAlpha: 0, antialias: true, eventMode: "static" });
-        document.body.appendChild(this.app.canvas);
-        this.is_init = true;
+    handleMoveBorderBottom = (dy) => {
+      const dx = dy * this.sprite.width / this.sprite.height;
+      const scale_x = (this.sprite.width + dx) / this.sprite.width;
+      const scale_y = (this.sprite.height + dy) / this.sprite.height;
+      this.sprite.height = this.sprite.height * scale_y;
+      this.sprite.width = this.sprite.width * scale_x;
+      this.handleResizeContent(dx, dy, scale_x, scale_y);
+    };
+    handleMoveBorderRight = (dx) => {
+      const dy = dx * this.sprite.height / this.sprite.width;
+      const scale_x = (this.sprite.width + dx) / this.sprite.width;
+      const scale_y = (this.sprite.height + dy) / this.sprite.height;
+      this.sprite.height = this.sprite.height * scale_y;
+      this.sprite.width = this.sprite.width * scale_x;
+      this.handleResizeContent(dx, dy, scale_x, scale_y);
+    };
+  };
+
+  // src/utils/getElementByData.ts
+  var getElementByData_default = async (app, data2) => {
+    switch (data2.type) {
+      case "image":
+        const texture = await Assets.load(data2.data.src);
+        return new ElementImage_default(app, { ...data2.data, texture });
+      case "background": {
+        return new ElementRect_default(app, { ...data2.data, fill: Configuration.config.backgrounds[data2.data.idx_in_confing].color });
+      }
+      case "rect": {
+        return new ElementRect_default(app, { ...data2.data, ...Configuration.config.rect });
       }
     }
-    setEventListeners() {
-      let point_cursor = null;
-      let saved_offset = null;
-      const speed_grabbing = 2;
-      let scale = 1;
-      let saved_y_coord = this.games_tree.container.y;
-      this.app.stage.addEventListener("wheel", (event) => {
-      });
+  };
+
+  // src/components/Background/index.ts
+  var Background_default = class extends Container {
+    app;
+    background_list = [new Container(), new Container(), new Container(), new Container()];
+    constructor(app) {
+      super();
+      this.app = app;
+      const screen_width = this.app.screen.width;
+      const screen_height = this.app.screen.height;
+      this.background_list[0].addChild(new Graphics().rect(0, 0, 1, 1).fill(Configuration.config.backgrounds[0].color));
+      this.background_list[1].addChild(new Graphics().rect(0, 0, 1, 1).fill(Configuration.config.backgrounds[1].color));
+      this.background_list[2].addChild(new Graphics().rect(0, 0, 1, 1).fill(Configuration.config.backgrounds[2].color));
+      this.background_list[3].addChild(new Graphics().rect(0, 0, 1, 1).fill(Configuration.config.backgrounds[3].color));
+      this.background_list[0].position = { x: 0, y: 0 };
+      this.background_list[1].position = { x: screen_width, y: 0 };
+      this.background_list[2].position = { x: 0, y: screen_height };
+      this.background_list[3].position = { x: screen_width, y: screen_height };
+      this.addChild(...this.background_list);
+    }
+    updateSizes(x_content, y_content) {
+      const screen_width = this.app.screen.width;
+      const screen_height = this.app.screen.height;
+      if (x_content > screen_width) {
+        this.background_list[0].scale.x = screen_width;
+        this.background_list[1].scale.x = 0;
+        this.background_list[2].scale.x = screen_width;
+        this.background_list[3].scale.x = 0;
+      } else if (x_content < 0) {
+        this.background_list[0].scale.x = 0;
+        this.background_list[1].scale.x = -screen_width;
+        this.background_list[2].scale.x = 0;
+        this.background_list[3].scale.x = -screen_width;
+      } else {
+        this.background_list[0].scale.x = x_content;
+        this.background_list[1].scale.x = -(screen_width - x_content);
+        this.background_list[2].scale.x = x_content;
+        this.background_list[3].scale.x = -(screen_width - x_content);
+      }
+      if (y_content > screen_height) {
+        this.background_list[0].scale.y = screen_height;
+        this.background_list[1].scale.y = screen_height;
+        this.background_list[2].scale.y = 0;
+        this.background_list[3].scale.y = 0;
+      } else if (y_content < 0) {
+        this.background_list[0].scale.y = 0;
+        this.background_list[1].scale.y = 0;
+        this.background_list[2].scale.y = -screen_height;
+        this.background_list[3].scale.y = -screen_height;
+      } else {
+        this.background_list[0].scale.y = y_content;
+        this.background_list[1].scale.y = y_content;
+        this.background_list[2].scale.y = -(screen_height - y_content);
+        this.background_list[3].scale.y = -(screen_height - y_content);
+      }
     }
   };
 
-  // src/data.ts
-  var players = [
-    { uid: "player_1", nickname: "player_1" },
-    { uid: "player_2", nickname: "player_2" },
-    { uid: "player_3", nickname: "player_3" },
-    { uid: "player_4", nickname: "player_4" },
-    { uid: "player_5", nickname: "player_5" },
-    { uid: "player_6", nickname: "player_6" },
-    { uid: "player_7", nickname: "player_7" },
-    { uid: "player_8", nickname: "player_8" },
-    { uid: "player_9", nickname: "player_9" },
-    { uid: "player_10", nickname: "player_10" },
-    { uid: "player_11", nickname: "player_11" },
-    { uid: "player_12", nickname: "player_12" },
-    { uid: "player_13", nickname: "player_13" },
-    { uid: "player_14", nickname: "player_14" },
-    { uid: "player_15", nickname: "player_15" },
-    { uid: "player_16", nickname: "player_16" },
-    { uid: "player_17", nickname: "player_17" },
-    { uid: "player_18", nickname: "player_18" },
-    { uid: "player_19", nickname: "player_19" },
-    { uid: "player_20", nickname: "player_20" },
-    { uid: "player_21", nickname: "player_21" },
-    { uid: "player_22", nickname: "player_22" },
-    { uid: "player_23", nickname: "player_23" },
-    { uid: "player_24", nickname: "player_24" },
-    { uid: "player_25", nickname: "player_25" },
-    { uid: "player_26", nickname: "player_26" },
-    { uid: "player_27", nickname: "player_27" },
-    { uid: "player_28", nickname: "player_28" },
-    { uid: "player_29", nickname: "player_29" },
-    { uid: "player_30", nickname: "player_30" },
-    { uid: "player_31", nickname: "player_31" },
-    { uid: "player_32", nickname: "player_32" },
-    { uid: "player_33", nickname: "player_33" },
-    { uid: "player_34", nickname: "player_34" },
-    { uid: "player_35", nickname: "player_35" },
-    { uid: "player_36", nickname: "player_36" },
-    { uid: "player_37", nickname: "player_37" },
-    { uid: "player_38", nickname: "player_38" },
-    { uid: "player_39", nickname: "player_39" },
-    { uid: "player_40", nickname: "player_40" },
-    { uid: "player_41", nickname: "player_41" },
-    { uid: "player_42", nickname: "player_42" },
-    { uid: "player_43", nickname: "player_43" },
-    { uid: "player_44", nickname: "player_44" },
-    { uid: "player_45", nickname: "player_45" },
-    { uid: "player_46", nickname: "player_46" },
-    { uid: "player_47", nickname: "player_47" },
-    { uid: "player_48", nickname: "player_48" },
-    { uid: "player_49", nickname: "player_49" },
-    { uid: "player_50", nickname: "player_50" },
-    { uid: "player_51", nickname: "player_51" },
-    { uid: "player_52", nickname: "player_52" },
-    { uid: "player_53", nickname: "player_53" },
-    { uid: "player_54", nickname: "player_54" },
-    { uid: "player_55", nickname: "player_55" },
-    { uid: "player_56", nickname: "player_56" },
-    { uid: "player_57", nickname: "player_57" },
-    { uid: "player_58", nickname: "player_58" },
-    { uid: "player_59", nickname: "player_59" },
-    { uid: "player_60", nickname: "player_60" },
-    { uid: "player_61", nickname: "player_61" },
-    { uid: "player_62", nickname: "player_62" },
-    { uid: "player_63", nickname: "player_63" },
-    { uid: "player_64", nickname: "player_64" }
-  ];
-  var commands = [
-    { uid: "command_1", players_uid: ["player_1", "player_2"] },
-    { uid: "command_2", players_uid: ["player_3", "player_4"] },
-    { uid: "command_3", players_uid: ["player_5", "player_6"] },
-    { uid: "command_4", players_uid: ["player_7", "player_8"] },
-    { uid: "command_5", players_uid: ["player_9", "player_10"] },
-    { uid: "command_6", players_uid: ["player_11", "player_12"] },
-    { uid: "command_7", players_uid: ["player_13", "player_14"] },
-    { uid: "command_8", players_uid: ["player_15", "player_16"] },
-    { uid: "command_9", players_uid: ["player_17", "player_18"] },
-    { uid: "command_10", players_uid: ["player_19", "player_20"] },
-    { uid: "command_11", players_uid: ["player_21", "player_22"] },
-    { uid: "command_12", players_uid: ["player_23", "player_24"] },
-    { uid: "command_13", players_uid: ["player_25", "player_26"] },
-    { uid: "command_14", players_uid: ["player_27", "player_28"] },
-    { uid: "command_15", players_uid: ["player_29", "player_30"] },
-    { uid: "command_16", players_uid: ["player_31", "player_32"] },
-    { uid: "command_17", players_uid: ["player_33", "player_34"] },
-    { uid: "command_18", players_uid: ["player_35", "player_36"] },
-    { uid: "command_19", players_uid: ["player_37", "player_38"] },
-    { uid: "command_20", players_uid: ["player_39", "player_40"] },
-    { uid: "command_21", players_uid: ["player_41", "player_42"] },
-    { uid: "command_22", players_uid: ["player_43", "player_44"] },
-    { uid: "command_23", players_uid: ["player_45", "player_46"] },
-    { uid: "command_24", players_uid: ["player_47", "player_48"] },
-    { uid: "command_25", players_uid: ["player_49", "player_50"] },
-    { uid: "command_26", players_uid: ["player_51", "player_52"] },
-    { uid: "command_27", players_uid: ["player_53", "player_54"] },
-    { uid: "command_28", players_uid: ["player_55", "player_56"] },
-    { uid: "command_29", players_uid: ["player_57", "player_58"] },
-    { uid: "command_30", players_uid: ["player_59", "player_60"] },
-    { uid: "command_31", players_uid: ["player_61", "player_62"] },
-    { uid: "command_32", players_uid: ["player_63", "player_64"] }
-  ];
-  var games = [
-    {
-      uid: "game_1",
-      commands_uid: ["command_1", "command_2"],
-      next_game_uid: "game_17"
-    },
-    {
-      uid: "game_2",
-      commands_uid: ["command_3", "command_4"],
-      next_game_uid: "game_17"
-    },
-    {
-      uid: "game_3",
-      commands_uid: ["command_5", "command_6"],
-      next_game_uid: "game_18"
-    },
-    {
-      uid: "game_4",
-      commands_uid: ["command_7", "command_8"],
-      next_game_uid: "game_18"
-    },
-    {
-      uid: "game_5",
-      commands_uid: ["command_9", "command_10"],
-      next_game_uid: "game_19"
-    },
-    {
-      uid: "game_6",
-      commands_uid: ["command_11", "command_12"],
-      next_game_uid: "game_19"
-    },
-    {
-      uid: "game_7",
-      commands_uid: ["command_13", "command_14"],
-      next_game_uid: "game_20"
-    },
-    {
-      uid: "game_8",
-      commands_uid: ["command_15", "command_16"],
-      next_game_uid: "game_20"
-    },
-    {
-      uid: "game_9",
-      commands_uid: ["command_17", "command_18"],
-      next_game_uid: "game_21"
-    },
-    {
-      uid: "game_10",
-      commands_uid: ["command_19", "command_20"],
-      next_game_uid: "game_21"
-    },
-    {
-      uid: "game_11",
-      commands_uid: ["command_21", "command_22"],
-      next_game_uid: "game_22"
-    },
-    {
-      uid: "game_12",
-      commands_uid: ["command_23", "command_24"],
-      next_game_uid: "game_22"
-    },
-    {
-      uid: "game_13",
-      commands_uid: ["command_25", "command_26"],
-      next_game_uid: "game_23"
-    },
-    {
-      uid: "game_14",
-      commands_uid: ["command_27", "command_28"],
-      next_game_uid: "game_23"
-    },
-    {
-      uid: "game_15",
-      commands_uid: ["command_29", "command_30"],
-      next_game_uid: "game_24"
-    },
-    {
-      uid: "game_16",
-      commands_uid: ["command_31", "command_32"],
-      next_game_uid: "game_24"
-    },
-    {
-      uid: "game_17",
-      commands_uid: ["command_1", "command_3"],
-      next_game_uid: "game_25"
-    },
-    {
-      uid: "game_18",
-      commands_uid: ["command_5", "command_7"],
-      next_game_uid: "game_25"
-    },
-    {
-      uid: "game_19",
-      commands_uid: ["command_9", "command_11"],
-      next_game_uid: "game_26"
-    },
-    {
-      uid: "game_20",
-      commands_uid: ["command_13", "command_15"],
-      next_game_uid: "game_26"
-    },
-    {
-      uid: "game_21",
-      commands_uid: ["command_17", "command_19"],
-      next_game_uid: "game_27"
-    },
-    {
-      uid: "game_22",
-      commands_uid: ["command_21", "command_23"],
-      next_game_uid: "game_27"
-    },
-    {
-      uid: "game_23",
-      commands_uid: ["command_25", "command_27"],
-      next_game_uid: "game_28"
-    },
-    {
-      uid: "game_24",
-      commands_uid: ["command_29", "command_31"],
-      next_game_uid: "game_28"
-    },
-    {
-      uid: "game_25",
-      commands_uid: ["command_1", "command_5"],
-      next_game_uid: "game_29"
-    },
-    {
-      uid: "game_26",
-      commands_uid: ["command_9", "command_13"],
-      next_game_uid: "game_29"
-    },
-    {
-      uid: "game_27",
-      commands_uid: ["command_17", "command_21"],
-      next_game_uid: "game_30"
-    },
-    {
-      uid: "game_28",
-      commands_uid: ["command_25", "command_29"],
-      next_game_uid: "game_30"
-    },
-    {
-      uid: "game_29",
-      commands_uid: ["command_1", "command_9"],
-      next_game_uid: "game_31"
-    },
-    {
-      uid: "game_30",
-      commands_uid: ["command_17", "command_25"],
-      next_game_uid: "game_31"
-    },
-    {
-      uid: "game_31",
-      commands_uid: ["command_1", "command_17"]
+  // src/main.ts
+  var main_default = class {
+    app = new Application();
+    app_state;
+    app_controller;
+    content;
+    background;
+    async init() {
+      await this.app.init({ resizeTo: window, backgroundAlpha: 0, antialias: true });
+      this.background = new Background_default(this.app);
+      this.background.updateSizes(this.app.screen.width / 2, this.app.screen.height / 2);
+      this.app.stage.addChild(this.background);
+      this.content = new Container();
+      this.content.x = this.app.screen.width / 2;
+      this.content.y = this.app.screen.height / 2;
+      this.app.stage.addChild(this.content);
+      this.app_state = new AppState_default(this.content, this.background);
+      this.app_controller = new AppController_default(this.app, this.app_state);
+      document.body.appendChild(this.app.canvas);
     }
-  ];
-  var data_default = {
-    games,
-    commands,
-    players
+    async setData(data2) {
+      await Promise.all(
+        data2.map(async (i2) => {
+          const component = await getElementByData_default(this.app, i2);
+          this.content.addChild(component);
+          this.app_state.addElement(component);
+        })
+      );
+    }
   };
 
-  // src/index.ts
-  var tourney_view = new TourneyView_default();
-  tourney_view.draw(data_default);
+  // main.ts
+  var data = [
+    {
+      type: "image",
+      data: {
+        src: "public/cat.jpg",
+        width: 200,
+        x: 0,
+        y: 0
+      }
+    },
+    {
+      type: "rect",
+      data: {
+        x: -80,
+        y: -200,
+        height: 100,
+        width: 100
+      }
+    }
+  ];
+  async function main() {
+    const api_tasker = new main_default();
+    await api_tasker.init();
+    api_tasker.setData(data);
+  }
+  main();
 })();
