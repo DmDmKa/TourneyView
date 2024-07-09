@@ -1,0 +1,8 @@
+@font-face {
+  font-family: 'SF UI Display';
+  font-style: normal;
+  font-weight: 400;
+  src:
+    url('./SF_UI_Display/SF_UI_Display-Regular.woff2') format('woff2'),
+    url('./SF_UI_Display/SF_UI_Display-Regular.ttf') format('truetype');
+}
